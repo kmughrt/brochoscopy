@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>支氣管鏡室病患檢查及衛教登記表</title>
+<style>
+:root{
+  --green:#dfeedd; --cream:#fff3cf; --line:#777;
+  --bg:#f4f7f5; --primary:#2f6f55; --danger:#b42318;
+  --border:#d5ddd8; --soft:#f7faf8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;color:#222}
+.wrap{max-width:1680px;margin:auto;padding:18px}
+.header{border:1px solid #333;background:#fff;text-align:center}
+.hospital{background:var(--cream);font-size:26px;font-weight:900;padding:12px}
+.title{background:var(--green);font-size:24px;font-weight:900;padding:11px;border-top:1px solid #333}
+
+.toolbar{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  margin:14px 0;
+}
+.toolbar-left,.toolbar-right{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{
+  border:0;border-radius:8px;padding:9px 14px;font:inherit;font-weight:800;cursor:pointer
+}
+.primary{background:var(--primary);color:#fff}
+.secondary{background:#e7ece9;color:#27342e}
+.danger{background:#fee4e2;color:var(--danger)}
+input,select,textarea{
+  width:100%;border:1px solid #adb6b0;border-radius:7px;padding:8px;font:inherit;background:#fff
+}
+.toolbar input,.toolbar select{width:auto}
+.month-wrap{
+  display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--border);
+  border-radius:10px;padding:8px 10px
+}
+.month-wrap label{font-size:14px;font-weight:800;margin:0}
+
+.trace-wrap{
+  display:flex;
+  gap:7px;
+  align-items:center;
+  flex-wrap:wrap;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 10px;
+}
+.trace-wrap label{
+  font-size:14px;
+  font-weight:800;
+  margin:0;
+  white-space:nowrap;
+}
+.trace-label{
+  font-size:14px;
+  font-weight:900;
+  color:#29493a;
+  padding-right:3px;
+}
+.trace-wrap input[type="date"]{
+  width:142px;
+}
+.trace-wrap select{
+  width:92px;
+}
+.trace-active{
+  border-color:#6ca687;
+  box-shadow:0 0 0 2px rgba(47,111,85,.10);
+}
+
+.layout{display:grid;grid-template-columns:430px minmax(0,1fr);gap:14px;align-items:start}
+.card{background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.08);padding:14px}
+.form-card{position:sticky;top:10px}
+h2{margin:0 0 12px;font-size:21px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field.full{grid-column:1/-1}
+label{display:block;font-size:14px;font-weight:800;margin-bottom:4px}
+textarea{min-height:65px;resize:vertical}
+.ct-box{display:grid;grid-template-columns:72px minmax(0, 1fr);gap:8px}
+.group-shell{
+  border:1px solid var(--border);border-radius:10px;background:var(--soft);padding:10px
+}
+.group-shell-title{
+  font-size:14px;font-weight:900;margin-bottom:8px;color:#29493a
+}
+.group-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.group-box{
+  border:1px solid var(--border);border-radius:10px;background:#fff;padding:8px 10px
+}
+.group-box h4{
+  margin:0 0 6px;font-size:13px;color:#29493a;text-align:left
+}
+.group-box label{display:grid;grid-template-columns:18px minmax(0,1fr);align-items:start;justify-content:start;gap:8px;font-weight:600;margin:4px 0;font-size:13px;text-align:left;white-space:normal;word-break:keep-all;overflow-wrap:break-word;line-height:1.35}
+.actions{display:flex;gap:8px;margin-top:12px}
+.actions button{flex:1}
+.table-wrap{overflow:auto;border:1px solid #444;background:#fff}
+table{width:100%;min-width:1550px;border-collapse:collapse;table-layout:fixed}
+th,td{border:1px solid var(--line);padding:7px 6px;vertical-align:top}
+th{background:#f5f5f5;text-align:center;font-size:15px;height:58px}
+td{font-size:15px;min-height:60px;line-height:1.45}
+.seq{width:55px}.date{width:105px}.ct{width:105px}.exam{width:105px}.source{width:78px}
+.bed{width:70px}.chart{width:105px}.name{width:100px}.short{width:72px}.consent{width:95px}
+.item{width:115px}.staff{width:95px}.memo{width:145px}.action{width:70px}
+.center{text-align:center}
+.patient-name{font-size:17px;font-weight:900;color:#173d2f}
+.small{font-size:14px;line-height:1.5}
+.empty{text-align:center;color:#718078;padding:30px}
+.note{font-size:12px;color:#68746e;margin-top:8px}
+.history{display:none;border:1px solid #d5ddd8;border-radius:8px;max-height:160px;overflow:auto;margin-top:4px;background:#fff}
+.history.show{display:block}
+.history div{padding:7px;border-top:1px solid #eee;cursor:pointer}
+.history div:hover{background:#edf6f0}
+.selected-row td{background:#eef8f2}
+
+
+.general-detail-stats{
+  margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.general-detail-box{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  background:#f7faf8;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 12px;
+  min-width:0;
+}
+.general-detail-title{
+  font-size:14px;
+  font-weight:900;
+  color:#29493a;
+  white-space:nowrap;
+}
+.general-detail-item{
+  font-size:14px;
+  line-height:1.45;
+  white-space:nowrap;
+}
+.general-detail-item strong{
+  font-size:16px;
+  color:#173d2f;
+}
+
+.trace-stats{
+  display:none;
+  margin-top:10px;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.trace-stats.show{
+  display:flex;
+}
+.stat-card{
+  flex:1 1 360px;
+  min-width:320px;
+  background:#f7faf8;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.stat-card-title{
+  font-size:15px;
+  font-weight:900;
+  color:#29493a;
+  margin:0;
+  white-space:nowrap;
+}
+.stat-card-line{
+  font-size:15px;
+  line-height:1.4;
+  white-space:nowrap;
+}
+.stat-card strong{
+  font-size:16px;
+  color:#173d2f;
+}
+
+
+
+.summary-left-panel{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:10px;
+  min-width:280px;
+}
+.general-stats-panel{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  min-width:0;
+  flex:1;
+}
+
+.general-stats-panel{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  min-width:0;
+}
+.general-stats-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 10px;
+  justify-content:flex-start;
+  width:fit-content;
+  max-width:100%;
+}
+.general-stats-control label{
+  font-size:14px;
+  font-weight:800;
+  margin:0;
+  white-space:nowrap;
+}
+.general-stats-control select{
+  width:auto;
+  min-width:170px;
+}
+.general-stats-box{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  background:#f7faf8;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 12px;
+  min-width:0;
+}
+.general-stats-title{
+  font-size:14px;
+  font-weight:900;
+  color:#29493a;
+  white-space:nowrap;
+}
+.general-stats-item{
+  font-size:14px;
+  line-height:1.45;
+  white-space:nowrap;
+}
+.general-stats-item strong{
+  font-size:16px;
+  color:#173d2f;
+}
+
+.summary-bar{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;
+  margin-bottom:10px
+}
+.summary-title{font-size:16px;font-weight:900;color:#29493a}
+.summary-sub{font-size:13px;color:#5c6a63}
+
+td, th{
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.table-wrap{
+  max-width:100%;
+}
+table{
+  width:max-content;
+  min-width:100%;
+}
+
+
+.general-detail-stats{
+  margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.general-detail-box{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  background:#f7faf8;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 12px;
+  min-width:0;
+}
+.general-detail-title{
+  font-size:14px;
+  font-weight:900;
+  color:#29493a;
+  white-space:nowrap;
+}
+.general-detail-item{
+  font-size:14px;
+  line-height:1.45;
+  white-space:nowrap;
+}
+.general-detail-item strong{
+  font-size:16px;
+  color:#173d2f;
+}
+
+.trace-stats{
+  display:none;
+  margin-top:10px;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.trace-stats.show{
+  display:flex;
+}
+.stat-card{
+  flex:1 1 360px;
+  min-width:320px;
+  background:#f7faf8;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.stat-card-title{
+  font-size:15px;
+  font-weight:900;
+  color:#29493a;
+  margin:0;
+  white-space:nowrap;
+}
+.stat-card-line{
+  font-size:15px;
+  line-height:1.4;
+  white-space:nowrap;
+}
+.stat-card strong{
+  font-size:16px;
+  color:#173d2f;
+}
+
+
+.general-stats-panel{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  min-width:0;
+}
+.general-stats-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 10px;
+  justify-content:flex-start;
+  width:fit-content;
+  max-width:100%;
+}
+.general-stats-control label{
+  font-size:14px;
+  font-weight:800;
+  margin:0;
+  white-space:nowrap;
+}
+.general-stats-control select{
+  width:auto;
+  min-width:170px;
+}
+.general-stats-box{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  background:#f7faf8;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 12px;
+  min-width:0;
+}
+.general-stats-title{
+  font-size:14px;
+  font-weight:900;
+  color:#29493a;
+  white-space:nowrap;
+}
+.general-stats-item{
+  font-size:14px;
+  line-height:1.45;
+  white-space:nowrap;
+}
+.general-stats-item strong{
+  font-size:16px;
+  color:#173d2f;
+}
+
+.summary-bar{
+  overflow:hidden;
+}
+.summary-title,.summary-sub{
+  max-width:100%;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.card{
+  min-width:0;
+}
+.layout > section{
+  min-width:0;
+}
+
+
+/* 左側登記資料輸入：所有格子固定收在白色框底內 */
+.form-card{
+  width:100%;
+  max-width:100%;
+  overflow:hidden;
+}
+.form-grid{
+  width:100%;
+  min-width:0;
+}
+.field{
+  min-width:0;
+  max-width:100%;
+}
+.field input,
+.field select,
+.field textarea{
+  display:block;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+}
+.ct-box{
+  width:100%;
+  min-width:0;
+  grid-template-columns:72px minmax(0, 1fr);
+}
+.ct-box select,
+.ct-box input{
+  min-width:0;
+  max-width:100%;
+}
+.group-shell,
+.group-grid,
+.group-box{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+}
+.group-grid{
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  align-items:start;
+}
+.group-box label{display:grid;grid-template-columns:18px minmax(0,1fr);align-items:start;justify-content:start;gap:8px;font-weight:600;margin:4px 0;font-size:13px;text-align:left;white-space:normal;word-break:keep-all;overflow-wrap:break-word;line-height:1.35}
+.actions{
+  width:100%;
+  min-width:0;
+}
+.actions button{
+  min-width:0;
+  white-space:normal;
+}
+
+
+
+.ct-box select{
+  padding-left:6px;
+  padding-right:4px;
+  text-align:left;
+}
+.ct-box input[type="date"]{
+  font-size:13px;
+  padding-left:6px;
+  padding-right:4px;
+}
+
+
+.stats-page{
+  display:none;
+  margin-top:14px;
+}
+.stats-page.show{
+  display:block;
+}
+.stats-page-toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+.stats-page-title{
+  font-size:26px;
+  font-weight:900;
+  color:#29493a;
+}
+.stats-filter-card{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:14px;
+}
+.stats-filter-card label{
+  margin:0;
+  font-weight:900;
+}
+.stats-filter-card input,.stats-filter-card select{
+  width:auto;
+}
+.stats-dashboard{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.stats-hero{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.stats-hero-title{
+  font-size:24px;
+  font-weight:900;
+  color:#29493a;
+}
+.stats-total{
+  font-size:18px;
+}
+.stats-total strong{
+  font-size:28px;
+  color:#173d2f;
+}
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+.stats-big-card,.stats-section-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+}
+.stats-big-card h3,.stats-section-card h3{
+  margin:0 0 12px;
+  color:#29493a;
+}
+.stats-big-card{
+  font-size:16px;
+  line-height:1.9;
+}
+.stats-big-card strong{
+  font-size:24px;
+  color:#173d2f;
+  margin-left:6px;
+}
+.stats-source-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+.stats-source-grid>div,.scope-stat-item{
+  background:#f7faf8;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+}
+.scope-stats-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
+}
+.scope-stat-item{
+  flex-direction:column;
+  align-items:flex-start;
+}
+.scope-stat-name{
+  font-size:18px;
+  font-weight:900;
+  color:#29493a;
+}
+.scope-stat-value{
+  font-size:15px;
+}
+.scope-stat-value strong{
+  font-size:20px;
+}
+@media(max-width:1100px){
+  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .scope-stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:650px){
+  .stats-grid,.stats-source-grid,.scope-stats-grid{grid-template-columns:1fr}
+}
+@media print and (max-width:0px){
+  #mainPage,.stats-page-toolbar button{display:none!important}
+  #statsPage{display:block!important}
+}
+
+
+.billing-suggest-box{
+  width:100%;
+  border:1px solid #c9d9d0;
+  border-radius:10px;
+  background:#f4faf6;
+  padding:10px 12px;
+}
+.billing-suggest-title{
+  font-size:15px;
+  font-weight:900;
+  color:#29493a;
+  margin-bottom:3px;
+}
+.billing-suggest-sub{
+  font-size:12px;
+  color:#65736c;
+  margin-bottom:8px;
+  line-height:1.5;
+}
+.billing-suggestion-list{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.billing-code-row{
+  display:grid;
+  grid-template-columns:74px minmax(0,1fr);
+  gap:8px;
+  align-items:start;
+  background:#fff;
+  border:1px solid #d9e3dd;
+  border-radius:8px;
+  padding:7px 9px;
+}
+.billing-code{
+  font-weight:900;
+  color:#173d2f;
+}
+.billing-name{
+  font-size:13px;
+  line-height:1.4;
+  color:#27342e;
+}
+.billing-empty{
+  font-size:13px;
+  color:#7a8781;
+}
+
+
+/* 未報到：姓名欄以下反白並鎖定 */
+.form-grid.no-show #attendanceLockMarker ~ .field{
+  opacity:.48;
+  filter:grayscale(.15);
+}
+.form-grid.no-show #attendanceLockMarker ~ .field input,
+.form-grid.no-show #attendanceLockMarker ~ .field select,
+.form-grid.no-show #attendanceLockMarker ~ .field textarea,
+.form-grid.no-show #attendanceLockMarker ~ .field button{
+  cursor:not-allowed;
+}
+.form-grid.no-show #attendanceLockMarker ~ .field .group-shell,
+.form-grid.no-show #attendanceLockMarker ~ .field .billing-suggest-box{
+  background:#f1f1f1;
+}
+
+@media(max-width:1250px){
+  .layout{grid-template-columns:390px minmax(0,1fr)}
+}
+@media(max-width:1100px){
+  .layout{grid-template-columns:1fr}
+  .form-card{position:static}
+}
+@media(max-width:520px){
+  .form-grid{grid-template-columns:1fr}
+  .field.full{grid-column:1}
+  .group-grid{grid-template-columns:1fr}
+  .ct-box{grid-template-columns:1fr}
+  .actions{flex-direction:column}
+}
+
+@media print and (max-width:0px){
+  body{background:#fff}.toolbar,.form-card,.action-col,.note{display:none!important}
+  .layout{display:block}.card{box-shadow:none;padding:0}.table-wrap{border:none}
+  table{font-size:9px;min-width:0}th,td{padding:2px}
+}
+
+/* 統計獨立頁：單項圖表 */
+.stats-page{display:none;margin-top:14px}
+.stats-page.show{display:block}
+.stats-page-toolbar{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px
+}
+.stats-page-title{font-size:27px;font-weight:900;color:#29493a}
+.stats-analysis-filter{
+  display:flex;align-items:end;gap:12px;flex-wrap:wrap;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:14px 16px;margin-bottom:14px
+}
+.stats-filter-field{display:flex;flex-direction:column;gap:5px}
+.stats-filter-field label{font-size:14px;font-weight:900;margin:0;color:#29493a}
+.stats-filter-field select,.stats-filter-field input{min-width:170px}
+.group-note{font-size:13px;color:#68746e}
+.stats-compare-field{display:none}
+.stats-chart-card{
+  background:#fff;border:1px solid var(--border);border-radius:16px;
+  padding:18px;min-height:610px
+}
+.chart-heading-row{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  border-bottom:1px solid #e5ebe7;padding-bottom:12px;margin-bottom:10px
+}
+.chart-title{font-size:24px;font-weight:900;color:#29493a}
+.chart-subtitle{font-size:14px;color:#68746e;margin-top:4px}
+.chart-kpis{display:flex;gap:10px;flex-wrap:wrap}
+.chart-kpi{
+  min-width:105px;background:#f7faf8;border:1px solid var(--border);
+  border-radius:10px;padding:8px 12px;display:flex;flex-direction:column;gap:2px
+}
+.chart-kpi span{font-size:12px;color:#68746e;font-weight:700}
+.chart-kpi strong{font-size:22px;color:#173d2f}
+.chart-legend{
+  display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+  min-height:28px;font-size:13px;color:#43534b;margin:4px 0 8px
+}
+.legend-item{display:flex;align-items:center;gap:6px}
+.legend-swatch{width:16px;height:10px;border-radius:3px;background:#5b9277}
+.legend-line{width:20px;height:0;border-top:3px solid #a46645}
+.legend-swatch-alt{width:16px;height:10px;border-radius:3px;background:#9ab7a8}
+.legend-line-alt{width:20px;height:0;border-top:3px dashed #6e7eaa}
+.stats-svg-wrap{
+  width:100%;height:455px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center
+}
+.stats-svg-wrap svg{width:100%;height:100%;display:block}
+.chart-note{font-size:13px;color:#68746e;margin-top:8px;text-align:center}
+.pie-label{font-size:16px;font-weight:800;fill:#29493a}
+.pie-value{font-size:25px;font-weight:900;fill:#173d2f}
+.axis-label{font-size:12px;fill:#5d6a64}
+.axis-title{font-size:12px;font-weight:800;fill:#425149}
+.data-label{font-size:11px;font-weight:800;fill:#29493a}
+@media(max-width:750px){
+  .stats-analysis-filter{align-items:stretch}
+  .stats-filter-field{width:100%}
+  .stats-filter-field select,.stats-filter-field input{width:100%;min-width:0}
+  .stats-svg-wrap{height:390px}
+}
+@media print and (max-width:0px){
+  #mainPage,.stats-page-toolbar button{display:none!important}
+  #statsPage{display:block!important}
+  .stats-analysis-filter{break-inside:avoid}
+  .stats-chart-card{border:none;box-shadow:none}
+}
+
+
+.print-register-heading{display:none}
+
+/* 列印模式 */
+@page{
+  size:A4 landscape;
+  margin:7mm;
+}
+@media print{
+  html,body{
+    width:100%;
+    background:#fff!important;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  /* 預設不直接列印任何頁面，必須由專用按鈕指定模式 */
+  body:not(.print-register):not(.print-stats) #mainPage,
+  body:not(.print-register):not(.print-stats) #statsPage{
+    display:none!important;
+  }
+
+  /* ===== 登記資料 A4 橫式 ===== */
+  body.print-register .header,
+  body.print-register .toolbar,
+  body.print-register .form-card,
+  body.print-register .summary-bar,
+  body.print-register .trace-stats,
+  body.print-register .note,
+  body.print-register #statsPage{
+    display:none!important;
+  }
+  body.print-register #mainPage{
+    display:block!important;
+  }
+  body.print-register .layout{
+    display:block!important;
+  }
+  body.print-register .layout > .card:last-child{
+    display:block!important;
+    padding:0!important;
+    margin:0!important;
+    box-shadow:none!important;
+    border-radius:0!important;
+    width:100%!important;
+  }
+  body.print-register .print-register-heading{
+    display:block!important;
+    text-align:center;
+    margin:0 0 5mm 0;
+  }
+  body.print-register .print-register-title{
+    font-size:15pt;
+    font-weight:900;
+    line-height:1.25;
+  }
+  body.print-register .print-register-subtitle{
+    font-size:13pt;
+    font-weight:900;
+    margin-top:1mm;
+  }
+  body.print-register .print-register-range{
+    font-size:9pt;
+    margin-top:1.5mm;
+  }
+  body.print-register .register-table-wrap{
+    overflow:visible!important;
+    border:0!important;
+    width:100%!important;
+  }
+  body.print-register #registerTable{
+    width:100%!important;
+    min-width:0!important;
+    table-layout:fixed!important;
+    border-collapse:collapse!important;
+    font-size:6.5pt!important;
+  }
+  body.print-register #registerTable thead{
+    display:table-header-group!important;
+  }
+  body.print-register #registerTable tr{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+  body.print-register #registerTable th,
+  body.print-register #registerTable td{
+    border:0.45pt solid #555!important;
+    padding:1.2mm 0.8mm!important;
+    height:auto!important;
+    min-height:0!important;
+    line-height:1.18!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+    vertical-align:middle!important;
+  }
+  body.print-register #registerTable th{
+    font-size:6.3pt!important;
+    font-weight:900!important;
+    background:#f1f1f1!important;
+    text-align:center!important;
+  }
+  body.print-register #registerTable td{
+    font-size:6.2pt!important;
+  }
+  body.print-register #registerTable .patient-name{
+    font-size:7pt!important;
+  }
+  body.print-register #registerTable .small{
+    font-size:5.8pt!important;
+    line-height:1.15!important;
+  }
+  body.print-register .action-col{
+    display:none!important;
+  }
+
+  /* A4 橫式欄寬微調：總和約 100% */
+  body.print-register #registerTable .seq{width:2.8%!important}
+  body.print-register #registerTable .date{width:5.2%!important}
+  body.print-register #registerTable .ct{width:4.8%!important}
+  body.print-register #registerTable .exam{width:5.2%!important}
+  body.print-register #registerTable .source{width:4.2%!important}
+  body.print-register #registerTable .bed{width:3.5%!important}
+  body.print-register #registerTable .chart{width:5.5%!important}
+  body.print-register #registerTable .name{width:5.5%!important}
+  body.print-register #registerTable .short{width:3.9%!important}
+  body.print-register #registerTable .consent{width:5.2%!important}
+  body.print-register #registerTable .item{width:5.2%!important}
+  body.print-register #registerTable .staff{width:5.2%!important}
+  body.print-register #registerTable .memo{width:8%!important}
+
+  /* ===== 統計頁列印 ===== */
+  body.print-stats #mainPage,
+  body.print-stats .stats-page-toolbar button{
+    display:none!important;
+  }
+  body.print-stats #statsPage{
+    display:block!important;
+  }
+  body.print-stats .stats-analysis-filter{
+    break-inside:avoid;
+  }
+  body.print-stats .stats-chart-card{
+    border:none!important;
+    box-shadow:none!important;
+  }
+}
+
+
+.nhi-points-card{
+  margin-top:14px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px 18px;
+}
+.nhi-points-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap:wrap;
+  border-bottom:1px solid #e5ebe7;
+  padding-bottom:12px;
+  margin-bottom:12px;
+}
+.nhi-points-title{
+  font-size:21px;
+  font-weight:900;
+  color:#29493a;
+}
+.nhi-points-subtitle{
+  font-size:13px;
+  color:#68746e;
+  margin-top:3px;
+}
+.nhi-point-value-control{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  font-size:13px;
+}
+.nhi-point-value-control label{
+  font-weight:900;
+  margin:0;
+}
+.nhi-point-value-control input{
+  width:92px;
+  text-align:right;
+}
+.nhi-points-kpis{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:12px;
+}
+.nhi-points-kpi{
+  background:#f7faf8;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.nhi-points-kpi span{
+  font-size:12px;
+  color:#68746e;
+  font-weight:700;
+}
+.nhi-points-kpi strong{
+  font-size:20px;
+  color:#173d2f;
+}
+.nhi-points-kpi.featured{
+  background:#edf7f1;
+}
+.nhi-code-table-wrap{
+  overflow:auto;
+  border:1px solid #dce4df;
+  border-radius:10px;
+}
+.nhi-code-table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:auto;
+}
+.nhi-code-table th,.nhi-code-table td{
+  border-bottom:1px solid #e2e8e4;
+  padding:8px 10px;
+  text-align:left;
+  font-size:13px;
+}
+.nhi-code-table th{
+  background:#f6f8f7;
+  font-weight:900;
+  color:#29493a;
+}
+.nhi-code-table td:nth-child(1),
+.nhi-code-table td:nth-child(3),
+.nhi-code-table td:nth-child(4),
+.nhi-code-table td:nth-child(5){
+  white-space:nowrap;
+}
+.nhi-code-table tr:last-child td{
+  border-bottom:0;
+}
+.nhi-points-note{
+  margin-top:9px;
+  font-size:12px;
+  color:#68746e;
+  line-height:1.5;
+}
+.nhi-compare-summary{
+  display:none;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.nhi-compare-summary.show{
+  display:flex;
+}
+.nhi-year-box{
+  flex:1 1 280px;
+  border:1px solid #d5e1da;
+  background:#f7faf8;
+  border-radius:10px;
+  padding:10px 12px;
+  font-size:13px;
+  line-height:1.7;
+}
+.nhi-year-box strong{
+  font-size:17px;
+  color:#173d2f;
+}
+@media(max-width:800px){
+  .nhi-points-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:500px){
+  .nhi-points-kpis{grid-template-columns:1fr}
+}
+@media print{
+  body.print-stats .nhi-points-card{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="hospital">高雄醫學大學附設高醫岡山醫院支氣管鏡室</div>
+    <div class="title">病患檢查時間及衛教登記表</div>
+  </div>
+
+  <div id="mainPage">
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="month-wrap">
+        <label for="monthFilter">顯示月份</label>
+        <input id="monthFilter" type="month">
+        <button class="primary" id="currentMonthBtn">本月資料</button>
+        <button class="secondary" id="showAllBtn">顯示全部</button>
+      </div>
+
+      <div class="trace-wrap">
+        <span class="trace-label">支鏡名單查詢</span>
+        <label for="traceDate">指定日期</label>
+        <input id="traceDate" type="date">
+        <label for="traceScope">支鏡編號</label>
+        <select id="traceScope">
+          <option value="">請選擇</option>
+          <option>A</option>
+          <option>B</option>
+          <option>C</option>
+          <option>D</option>
+          <option>290F</option>
+        </select>
+        <button class="primary" id="traceBtn">查詢往前 3 個月</button>
+        <button class="secondary" id="clearTraceBtn">取消查詢</button>
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <button class="primary" id="openStatsPageBtn">統計整頁</button>
+      <button class="secondary" id="csvBtn">匯出目前畫面 CSV</button>
+      <button class="secondary" id="backupBtn">備份</button>
+      <button class="secondary" id="importBtn">匯入</button>
+      <button class="primary" id="printRegisterBtn" title="A4 橫式列印目前畫面中的登記資料，可於列印視窗選擇「另存為 PDF」">列印登記資料</button>
+      <input id="importFile" type="file" accept=".json" hidden>
+    </div>
+  </div>
+
+  <div class="layout">
+    <section class="card form-card">
+      <h2 id="formTitle">登記資料輸入</h2>
+      <div class="form-grid">
+        <div class="field"><label>檢查日</label><input id="date" type="date"></div>
+        <div class="field"><label>CT</label>
+          <div class="ct-box">
+            <select id="ctMode">
+              <option value="none">無</option>
+              <option value="date">有</option>
+            </select>
+            <input id="ctDate" type="date" disabled>
+          </div>
+        </div>
+
+        <div class="field"><label>檢查項目</label>
+          <select id="exam">
+            <option></option>
+            <option>支氣管鏡</option>
+            <option>TBNA</option>
+          </select>
+        </div>
+        <div class="field"><label>病患來源</label>
+          <select id="source"><option></option><option>OPD</option><option>ER</option><option>Ward</option><option>ICU</option></select>
+        </div>
+
+        <div class="field"><label>床號</label><input id="bed"></div>
+        <div class="field"><label>病歷號</label><input id="chartNo"></div>
+
+        <div class="field"><label>姓名（可搜尋近三個月資料）</label><input id="name" placeholder="輸入姓名關鍵字"></div>
+        <div class="field"><label>有無報到</label>
+          <select id="attendance">
+            <option value=""></option>
+            <option>有報到</option>
+            <option>未報到</option>
+          </select>
+        </div>
+        <div id="history" class="history field full"></div>
+        <div id="attendanceLockMarker" style="display:none"></div>
+
+        <div class="field"><label>鎮靜</label>
+          <select id="sedation"><option></option><option>有</option><option>無</option></select>
+        </div>
+        <div class="field"><label>EBUS</label>
+          <select id="ebus"><option></option><option>有</option><option>無</option></select>
+        </div>
+
+        <div class="field"><label>疼痛評估</label>
+          <select id="pain"><option></option><option>有</option><option>無</option></select>
+        </div>
+        <div class="field"><label>用藥評估</label>
+          <select id="medAssessment"><option></option><option>是</option><option>否</option></select>
+        </div>
+
+        <div class="field"><label>修改入帳</label>
+          <select id="posted"><option></option><option>有</option><option>無</option></select>
+        </div>
+        <div class="field"><label>支鏡編號</label>
+          <select id="scopeNo">
+            <option></option><option>A</option><option>B</option><option>C</option><option>D</option><option>290F</option>
+          </select>
+        </div>
+
+        <div class="field"><label>檢查醫師</label>
+          <select id="doctor">
+            <option></option>
+            <option>蔡英明</option>
+            <option>魏伯儒</option>
+            <option>陳家閔</option>
+            <option>馬瑞陽</option>
+            <option>許恩齊</option>
+          </select>
+        </div>
+        <div class="field"><label>執行人員</label>
+          <select id="operator">
+            <option></option>
+            <option>蘇淑惠</option>
+            <option>陳懷恩</option>
+            <option>翼昱嫈</option>
+            <option>葉睿豐</option>
+            <option>林佩樺</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <div class="billing-suggest-box">
+            <div class="billing-suggest-title">建議入帳項目</div>
+            <div class="billing-suggest-sub" id="billingRuleSummary">請先完成 EBUS、CT 與檢體項目選擇</div>
+            <div id="billingSuggestion" class="billing-suggestion-list">
+              <div class="billing-empty">尚未產生建議</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field full">
+          <div class="group-shell">
+            <div class="group-shell-title">流程、同意書、衛教及檢體項目</div>
+            <div class="group-grid">
+              <div class="group-box">
+                <h4>流程</h4>
+                <label><input type="checkbox" id="timeout"> Time out</label>
+                <label><input type="checkbox" id="signout"> Sign out</label>
+              </div>
+              <div class="group-box">
+                <h4>同意書</h4>
+                <label><input type="checkbox" id="consentScope"> 支鏡同意書</label>
+                <label><input type="checkbox" id="consentSed"> 鎮靜同意書</label>
+              </div>
+              <div class="group-box">
+                <h4>衛教</h4>
+                <label><input type="checkbox" id="eduScope"> 支鏡衛教</label>
+                <label><input type="checkbox" id="eduSed"> 鎮靜衛教</label>
+              </div>
+              <div class="group-box">
+                <h4>檢體項目</h4>
+                <label><input type="checkbox" id="bal"> BAL</label>
+                <label><input type="checkbox" id="biopsy"> Biopsy</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field full"><label>備註</label><textarea id="memo"></textarea></div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="saveBtn">儲存並新增一列</button>
+        <button class="secondary" id="clearBtn">清除輸入</button>
+      </div>
+      <button class="danger" id="deleteBtn" style="width:100%;margin-top:8px;display:none">刪除此筆資料</button>
+      <div class="note">上方可快速切換本月資料，或依「指定日期＋支鏡編號」查詢該日期往前 3 個月的單一支鏡使用名單，並同步統計該支鏡當年度與當月份的使用次數及使用率。每次儲存後，右側登記表會自動增加一列。</div>
+    </section>
+
+    <section class="card">
+      <div class="summary-bar">
+        <div class="summary-left-panel">
+          <div>
+            <div class="summary-title" id="tableTitle">登記資料</div>
+            <div class="summary-sub" id="tableSub">目前顯示全部資料</div>
+          </div>
+          <div class="general-stats-control">
+            <label for="generalStatsMode">統計範圍</label>
+            <select id="generalStatsMode">
+              <option value="month">當月統計資料</option>
+              <option value="year">全部資料（以當年為主）</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="general-stats-panel">
+          <div>
+            <div class="general-stats-box">
+              <span class="general-stats-title" id="generalStatsTitle">當月統計</span>
+              <span class="general-stats-item">鎮靜人數：<strong id="sedationCount">0</strong></span>
+              <span class="general-stats-item">鎮靜比率：<strong id="sedationRate">0%</strong></span>
+              <span class="general-stats-item">EBUS 使用次數：<strong id="ebusCount">0</strong></span>
+              <span class="general-stats-item">EBUS 使用率：<strong id="ebusRate">0%</strong></span>
+            </div>
+
+            <div class="general-detail-stats">
+              <div class="general-detail-box">
+                <span class="general-detail-title">病患來源統計</span>
+                <span class="general-detail-item">OPD：<strong id="sourceOPDCount">0</strong>（<strong id="sourceOPDRate">0%</strong>）</span>
+                <span class="general-detail-item">ER：<strong id="sourceERCount">0</strong>（<strong id="sourceERRate">0%</strong>）</span>
+                <span class="general-detail-item">Ward：<strong id="sourceWardCount">0</strong>（<strong id="sourceWardRate">0%</strong>）</span>
+                <span class="general-detail-item">ICU：<strong id="sourceICUCount">0</strong>（<strong id="sourceICURate">0%</strong>）</span>
+              </div>
+              <div class="general-detail-box">
+                <span class="general-detail-title">檢體項目統計</span>
+                <span class="general-detail-item">BAL：<strong id="balCount">0</strong>（<strong id="balRate">0%</strong>）</span>
+                <span class="general-detail-item">Biopsy：<strong id="biopsyCount">0</strong>（<strong id="biopsyRate">0%</strong>）</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="trace-stats" id="traceStats">
+        <div class="stat-card">
+          <div class="stat-card-title" id="yearStatTitle">年度統計</div>
+          <div class="stat-card-line">使用次數：<strong id="yearCount">0</strong></div>
+          <div class="stat-card-line">使用率：<strong id="yearRate">0%</strong></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-title" id="monthStatTitle">月份統計</div>
+          <div class="stat-card-line">使用次數：<strong id="monthCount">0</strong></div>
+          <div class="stat-card-line">使用率：<strong id="monthRate">0%</strong></div>
+        </div>
+      </div>
+      <div class="print-register-heading">
+        <div class="print-register-title">高雄醫學大學附設高醫岡山醫院支氣管鏡室</div>
+        <div class="print-register-subtitle">病患檢查時間及衛教登記表</div>
+        <div class="print-register-range" id="printRegisterRange"></div>
+      </div>
+      <div class="table-wrap register-table-wrap">
+        <table id="registerTable">
+          <thead>
+            <tr>
+              <th class="action action-col">修改</th><th class="seq">序號</th><th class="date">檢查日</th><th class="ct">CT</th>
+              <th class="exam">檢查項目</th><th class="source">病患來源</th><th class="bed">床號</th>
+              <th class="chart">病歷號</th><th class="name">姓名</th><th class="short">報到</th><th class="short">Time out</th>
+              <th class="short">Sign out</th><th class="short">鎮靜</th><th class="consent">同意書</th>
+              <th class="consent">衛教項目</th><th class="short">疼痛評估</th><th class="short">用藥評估</th>
+              <th class="short">EBUS</th><th class="staff">修改入帳</th><th class="item">項目</th>
+              <th class="staff">支鏡編號</th><th class="staff">檢查醫師</th><th class="staff">執行人員</th><th class="memo">備註</th>
+            </tr>
+          </thead>
+          <tbody id="body"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+  </div><!-- /mainPage -->
+
+  <section id="statsPage" class="stats-page">
+    <div class="stats-page-toolbar">
+      <button class="secondary" id="backToRegisterBtn">← 返回登記表</button>
+      <div class="stats-page-title">支氣管鏡室統計總覽</div>
+      <button class="secondary" id="printStatsBtn">列印統計頁</button>
+    </div>
+
+    <div class="stats-analysis-filter">
+      <div class="stats-filter-field">
+        <label for="statsViewMode">呈現模式</label>
+        <select id="statsViewMode">
+          <option value="item">單項統計</option>
+          <option value="group">大項內值比較</option>
+        </select>
+      </div>
+
+      <div class="stats-filter-field" id="statsMetricField">
+        <label for="statsMetric">統計項目</label>
+        <select id="statsMetric">
+          <optgroup label="處置 / 評估">
+            <option value="sedation">鎮靜</option>
+            <option value="ebus">EBUS</option>
+            <option value="bal">BAL</option>
+            <option value="biopsy">Biopsy</option>
+            <option value="medAssessment">用藥評估</option>
+          </optgroup>
+          <optgroup label="檢查項目">
+            <option value="examBronchoscopy">支氣管鏡</option>
+            <option value="examTBNA">TBNA</option>
+          </optgroup>
+          <optgroup label="病患來源">
+            <option value="sourceOPD">OPD</option>
+            <option value="sourceER">ER</option>
+            <option value="sourceWard">Ward</option>
+            <option value="sourceICU">ICU</option>
+          </optgroup>
+          <optgroup label="支鏡編號">
+            <option value="scopeA">A</option>
+            <option value="scopeB">B</option>
+            <option value="scopeC">C</option>
+            <option value="scopeD">D</option>
+            <option value="scope290F">290F</option>
+          </optgroup>
+          <optgroup label="檢查醫師">
+            <option value="doctor蔡英明">蔡英明</option>
+            <option value="doctor魏伯儒">魏伯儒</option>
+            <option value="doctor陳家閔">陳家閔</option>
+            <option value="doctor馬瑞陽">馬瑞陽</option>
+            <option value="doctor許恩齊">許恩齊</option>
+          </optgroup>
+          <optgroup label="執行人員">
+            <option value="operator蘇淑惠">蘇淑惠</option>
+            <option value="operator陳懷恩">陳懷恩</option>
+            <option value="operator翼昱嫈">翼昱嫈</option>
+            <option value="operator葉睿豐">葉睿豐</option>
+            <option value="operator林佩樺">林佩樺</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="stats-filter-field" id="statsGroupField" style="display:none">
+        <label for="statsGroup">比較大項</label>
+        <select id="statsGroup">
+          <option value="procedure">處置／評估</option>
+          <option value="exam">檢查項目</option>
+          <option value="source">病患來源</option>
+          <option value="scope">支鏡編號</option>
+          <option value="doctor">檢查醫師</option>
+          <option value="operator">執行人員</option>
+        </select>
+      </div>
+
+      <div class="stats-filter-field">
+        <label for="statsChartMode">統計方式</label>
+        <select id="statsChartMode">
+          <option value="month">單月統計</option>
+          <option value="year">當年度統計</option>
+          <option value="compare">年度間比較</option>
+        </select>
+      </div>
+
+      <div class="stats-filter-field" id="statsMonthField">
+        <label for="statsPageMonth">月份</label>
+        <input id="statsPageMonth" type="month">
+      </div>
+
+      <div class="stats-filter-field stats-compare-field" id="compareYearAField">
+        <label for="compareYearA">年度 A</label>
+        <select id="compareYearA"></select>
+      </div>
+
+      <div class="stats-filter-field stats-compare-field" id="compareYearBField">
+        <label for="compareYearB">年度 B</label>
+        <select id="compareYearB"></select>
+      </div>
+    </div>
+
+    <div class="stats-chart-card">
+      <div class="chart-heading-row">
+        <div>
+          <div class="chart-title" id="statsChartTitle">單月統計</div>
+          <div class="chart-subtitle" id="statsChartSubtitle"></div>
+        </div>
+        <div class="chart-kpis">
+          <div class="chart-kpi"><span>次數</span><strong id="chartCount">0</strong></div>
+          <div class="chart-kpi"><span>使用率</span><strong id="chartRate">0%</strong></div>
+          <div class="chart-kpi"><span>總筆數</span><strong id="chartTotal">0</strong></div>
+        </div>
+      </div>
+
+      <div class="chart-legend" id="statsChartLegend"></div>
+      <div class="stats-svg-wrap" id="statsSvgWrap"></div>
+      <div class="chart-note" id="statsChartNote"></div>
+    </div>
+
+    <div class="nhi-points-card">
+      <div class="nhi-points-header">
+        <div>
+          <div class="nhi-points-title">健保支付點數估算</div>
+          <div class="nhi-points-subtitle" id="nhiPointsScope">依目前統計範圍與建議入帳代碼估算</div>
+        </div>
+        <div class="nhi-point-value-control">
+          <label for="nhiPointValue">每點估算金額</label>
+          <input id="nhiPointValue" type="number" min="0" step="0.001" value="1.000">
+          <span>元／點</span>
+        </div>
+      </div>
+
+      <div class="nhi-points-kpis">
+        <div class="nhi-points-kpi">
+          <span>可估算案件</span>
+          <strong id="nhiEstimatedCases">0</strong>
+        </div>
+        <div class="nhi-points-kpi">
+          <span>未估算案件</span>
+          <strong id="nhiUnestimatedCases">0</strong>
+        </div>
+        <div class="nhi-points-kpi featured">
+          <span>估算支付點數</span>
+          <strong id="nhiTotalPoints">0</strong>
+        </div>
+        <div class="nhi-points-kpi featured">
+          <span>估算金額</span>
+          <strong id="nhiTotalAmount">NT$ 0</strong>
+        </div>
+      </div>
+
+      <div id="nhiCompareSummary" class="nhi-compare-summary"></div>
+      <div class="nhi-code-table-wrap">
+        <table class="nhi-code-table">
+          <thead>
+            <tr>
+              <th>入帳代碼</th>
+              <th>項目</th>
+              <th>支付點數／次</th>
+              <th>估算次數</th>
+              <th>小計點數</th>
+            </tr>
+          </thead>
+          <tbody id="nhiPointsBody"></tbody>
+        </table>
+      </div>
+      <div class="nhi-points-note">
+        ※ 此區為「建議入帳」之試算，不等同實際核付結果；未報到案件不列入。TBNA 僅以 28041B 估算。
+      </div>
+    </div>
+  </section>
+</div><script>
+const KEY="bronchoscopy_left_input_v3";
+let records=JSON.parse(localStorage.getItem(KEY)||"[]");
+
+records = records.map(r => {
+  if (r.posted === undefined) r.posted = "";
+  if (r.medAssessment === undefined) r.medAssessment = "";
+  if (r.doctor === undefined) r.doctor = "";
+  if (r.attendance === undefined) r.attendance = "";
+  return r;
+});
+
+let editingId=null;
+let showAll=false;
+let traceMode=false;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const fields=["date","ctMode","ctDate","exam","source","bed","chartNo","name","attendance","sedation","ebus","pain","medAssessment","posted","scopeNo","doctor","operator","memo"];
+const checks=["timeout","signout","consentScope","consentSed","eduScope","eduSed","bal","biopsy"];
+
+function persist(){localStorage.setItem(KEY,JSON.stringify(records))}
+function today(){return new Date().toISOString().slice(0,10)}
+function currentMonth(){return today().slice(0,7)}
+function minusMonths(dateStr, months){
+  const d=new Date(dateStr+"T00:00:00");
+  const originalDay=d.getDate();
+  d.setDate(1);
+  d.setMonth(d.getMonth()-months);
+  const lastDay=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  d.setDate(Math.min(originalDay,lastDay));
+  return d.toISOString().slice(0,10);
+}
+
+function parseLocalDate(s){
+  if(!s) return null;
+  const [y,m,d]=s.split("-").map(Number);
+  return new Date(y,m-1,d);
+}
+function monthsApartWithinSix(ctDate, examDate){
+  const ct=parseLocalDate(ctDate), ex=parseLocalDate(examDate);
+  if(!ct || !ex) return null;
+  if(ct>ex) return false;
+  const sixMonthsLater=new Date(ct.getFullYear(),ct.getMonth()+6,ct.getDate());
+  return ex<=sixMonthsLater;
+}
+function billingCodes(){
+  const exam=$("exam").value;
+  const ebus=$("ebus").value;
+  const ctMode=$("ctMode").value;
+  const ctDate=$("ctDate").value;
+  const examDate=$("date").value;
+  const hasBiopsy=$("biopsy").checked;
+  const hasBAL=$("bal").checked; // wash = BAL
+
+  let codes=[];
+  let summary="";
+
+  if(!exam){
+    return {codes:[],summary:"請先選擇檢查項目（支氣管鏡或 TBNA）。"};
+  }
+
+  // TBNA 為獨立且唯一的入帳代碼
+  if(exam==="TBNA"){
+    return {
+      codes:[["28041B","支氣管內視鏡超音波導引縱膈淋巴節定位切片術（TBNA）"]],
+      summary:"TBNA：唯一建議入帳代碼為 28041B。"
+    };
+  }
+
+  // 以下規則均為「支氣管鏡」檢查的建議入帳
+  if(exam!=="支氣管鏡"){
+    return {codes:[],summary:"目前無對應入帳規則。"};
+  }
+
+  if(!ebus){
+    return {codes:[],summary:"支氣管鏡：請先選擇 EBUS「有／無」。"};
+  }
+
+  if(ebus==="無"){
+    codes.push(["28006C","支氣管鏡檢查"]);
+    if(hasBiopsy) codes.push(["28030C","經內視鏡切片"]);
+    summary=`支氣管鏡；無 EBUS；${hasBAL?"BAL（wash）":"無 BAL"}${hasBiopsy?"＋Biopsy":""}`;
+    return {codes,summary};
+  }
+
+  if(ctMode==="date"){
+    if(!ctDate){
+      return {codes:[],summary:"支氣管鏡＋EBUS：CT 為「有」時，請輸入 CT 日期。"};
+    }
+    if(!examDate){
+      return {codes:[],summary:"請先輸入檢查日，才能判斷 CT 是否在 6 個月內。"};
+    }
+
+    const within6=monthsApartWithinSix(ctDate,examDate);
+    if(within6){
+      codes.push(["28040B","支氣管內視鏡超音波"]);
+      if(hasBiopsy) codes.push(["28030C","經內視鏡切片"]);
+      summary=`支氣管鏡＋EBUS；CT 在檢查日前 6 個月內；${hasBAL?"BAL（wash）":"無 BAL"}${hasBiopsy?"＋Biopsy":""}`;
+    }else{
+      codes.push(["28006C","支氣管鏡檢查"]);
+      codes.push(["28029C","內視鏡超音波（內視鏡另計）"]);
+      if(hasBiopsy) codes.push(["28030C","經內視鏡切片"]);
+      summary=`支氣管鏡＋EBUS；CT 非 6 個月內；${hasBAL?"BAL（wash）":"無 BAL"}${hasBiopsy?"＋Biopsy":""}`;
+    }
+    return {codes,summary};
+  }
+
+  codes.push(["28006C","支氣管鏡檢查"]);
+  codes.push(["28029C","內視鏡超音波（內視鏡另計）"]);
+  if(hasBiopsy) codes.push(["28030C","經內視鏡切片"]);
+  summary=`支氣管鏡＋EBUS；無 6 個月內 CT；${hasBAL?"BAL（wash）":"無 BAL"}${hasBiopsy?"＋Biopsy":""}`;
+  return {codes,summary};
+}
+function updateBillingSuggestion(){
+  if($("attendance") && $("attendance").value==="未報到"){
+    $("billingRuleSummary").textContent="未報到：後續資料已鎖定";
+    $("billingSuggestion").innerHTML='<div class="billing-empty">未報到，不產生入帳建議</div>';
+    return;
+  }
+  const result=billingCodes();
+  $("billingRuleSummary").textContent=result.summary || "請完成選項";
+  if(!result.codes.length){
+    $("billingSuggestion").innerHTML='<div class="billing-empty">尚未產生建議</div>';
+    return;
+  }
+  $("billingSuggestion").innerHTML=result.codes.map(([code,name]) =>
+    `<div class="billing-code-row"><div class="billing-code">${code}</div><div class="billing-name">${name}</div></div>`
+  ).join("");
+}
+
+function updateCtState(){
+  const useDate=$("ctMode").value==="date";
+  $("ctDate").disabled=!useDate;
+  if(!useDate) $("ctDate").value="";
+  updateBillingSuggestion();
+}
+
+const ATTENDANCE_LOCK_IDS=[
+  "sedation","ebus","pain","medAssessment","posted","scopeNo","doctor","operator","memo",
+  "timeout","signout","consentScope","consentSed","eduScope","eduSed","bal","biopsy"
+];
+function updateAttendanceState(){
+  const noShow=$("attendance").value==="未報到";
+  const grid=document.querySelector(".form-grid");
+  grid.classList.toggle("no-show",noShow);
+
+  ATTENDANCE_LOCK_IDS.forEach(id=>{
+    const el=$(id);
+    if(el) el.disabled=noShow;
+  });
+
+  // CT/檢查日/檢查項目/病患來源/床號/病歷號/姓名仍可編輯，
+  // 只有姓名欄以下內容鎖住。
+  if(noShow){
+    $("billingRuleSummary").textContent="未報到：後續資料已鎖定";
+    $("billingSuggestion").innerHTML='<div class="billing-empty">未報到，不產生入帳建議</div>';
+  }else{
+    updateBillingSuggestion();
+  }
+}
+
+function clearForm(){
+  editingId=null;
+  fields.forEach(id=>{
+    if(id==="date") $(id).value=today();
+    else if(id==="ctMode") $(id).value="none";
+    else $(id).value="";
+  });
+  checks.forEach(id=>$(id).checked=false);
+  updateCtState();
+  updateAttendanceState();
+  updateBillingSuggestion();
+  $("deleteBtn").style.display="none";
+  $("formTitle").textContent="登記資料輸入";
+  $("saveBtn").textContent="儲存並新增一列";
+  $("history").classList.remove("show");
+  render();
+}
+function getData(){
+  const r={id:editingId||Date.now().toString(36)+Math.random().toString(36).slice(2),updatedAt:new Date().toISOString()};
+  fields.forEach(id=>r[id]=$(id).value.trim());
+  checks.forEach(id=>r[id]=$(id).checked);
+  r.ct=r.ctMode==="date" ? r.ctDate : "無";
+  return r;
+}
+function fillForm(r){
+  editingId=r.id;
+  fields.forEach(id=>$(id).value=r[id]??"");
+  checks.forEach(id=>$(id).checked=!!r[id]);
+  updateCtState();
+  updateAttendanceState();
+  updateBillingSuggestion();
+  $("deleteBtn").style.display="block";
+  $("formTitle").textContent="修改登記資料";
+  $("saveBtn").textContent="儲存修改";
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function mark(v){return v?'<b style="color:#176b3a">✓</b>':'—'}
+function rateText(numerator, denominator){
+  if(!denominator) return "0%";
+  return ((numerator/denominator)*100).toFixed(1).replace(/\.0$/,"") + "%";
+}
+function currentStatBaseDate(){
+  if(traceMode && $("traceDate").value) return $("traceDate").value;
+  const month=$("monthFilter").value || currentMonth();
+  return month + "-01";
+}
+function updateGeneralStats(){
+  const base=currentStatBaseDate();
+  const year=base.slice(0,4);
+  const month=base.slice(0,7);
+  const mode=$("generalStatsMode").value;
+
+  let pool=[];
+  if(mode==="year"){
+    pool=records.filter(r => (r.date||"").slice(0,4)===year);
+    $("generalStatsTitle").textContent=`${year} 年統計`;
+  }else{
+    pool=records.filter(r => (r.date||"").slice(0,7)===month);
+    $("generalStatsTitle").textContent=`${year} 年 ${Number(month.slice(5,7))} 月統計`;
+  }
+
+  const total=pool.length;
+  const sedationYes=pool.filter(r => (r.sedation||"")==="有").length;
+  const ebusYes=pool.filter(r => (r.ebus||"")==="有").length;
+  const opdCount=pool.filter(r => (r.source||"")==="OPD").length;
+  const erCount=pool.filter(r => (r.source||"")==="ER").length;
+  const wardCount=pool.filter(r => (r.source||"")==="Ward").length;
+  const icuCount=pool.filter(r => (r.source||"")==="ICU").length;
+  const balCount=pool.filter(r => !!r.bal).length;
+  const biopsyCount=pool.filter(r => !!r.biopsy).length;
+
+  $("sedationCount").textContent=String(sedationYes);
+  $("sedationRate").textContent=rateText(sedationYes,total);
+  $("ebusCount").textContent=String(ebusYes);
+  $("ebusRate").textContent=rateText(ebusYes,total);
+
+  $("sourceOPDCount").textContent=String(opdCount);
+  $("sourceOPDRate").textContent=rateText(opdCount,total);
+  $("sourceERCount").textContent=String(erCount);
+  $("sourceERRate").textContent=rateText(erCount,total);
+  $("sourceWardCount").textContent=String(wardCount);
+  $("sourceWardRate").textContent=rateText(wardCount,total);
+  $("sourceICUCount").textContent=String(icuCount);
+  $("sourceICURate").textContent=rateText(icuCount,total);
+
+  $("balCount").textContent=String(balCount);
+  $("balRate").textContent=rateText(balCount,total);
+  $("biopsyCount").textContent=String(biopsyCount);
+  $("biopsyRate").textContent=rateText(biopsyCount,total);
+}
+function updateTraceStats(){
+  const box=$("traceStats");
+  if(!traceMode){
+    box.classList.remove("show");
+    return;
+  }
+  const end=$("traceDate").value;
+  const scope=$("traceScope").value;
+  if(!end || !scope){
+    box.classList.remove("show");
+    return;
+  }
+
+  const year=end.slice(0,4);
+  const month=end.slice(0,7);
+
+  const yearAll=records.filter(r => (r.date||"").slice(0,4)===year);
+  const yearScope=yearAll.filter(r => (r.scopeNo||"")===scope);
+
+  const monthAll=records.filter(r => (r.date||"").slice(0,7)===month);
+  const monthScope=monthAll.filter(r => (r.scopeNo||"")===scope);
+
+  $("yearStatTitle").textContent=`${year} 年 ${scope} 支鏡使用統計`;
+  $("yearCount").textContent=String(yearScope.length);
+  $("yearRate").textContent=rateText(yearScope.length, yearAll.length);
+
+  $("monthStatTitle").textContent=`${year} 年 ${Number(month.slice(5,7))} 月 ${scope} 支鏡使用統計`;
+  $("monthCount").textContent=String(monthScope.length);
+  $("monthRate").textContent=rateText(monthScope.length, monthAll.length);
+
+  box.classList.add("show");
+}
+function getFilteredRecords(){
+  let list=[...records];
+  list.sort((a,b)=>(a.date||"").localeCompare(b.date||"") || (a.updatedAt||"").localeCompare(b.updatedAt||""));
+
+  if(traceMode){
+    const end=$("traceDate").value;
+    const scope=$("traceScope").value;
+    if(!end || !scope) return [];
+    const start=minusMonths(end,3);
+    return list.filter(r =>
+      (r.date||"") >= start &&
+      (r.date||"") <= end &&
+      (r.scopeNo||"") === scope
+    );
+  }
+
+  if(showAll) return list;
+
+  const month=$("monthFilter").value || currentMonth();
+  const mode=$("generalStatsMode").value;
+
+  if(mode==="year"){
+    const year=month.slice(0,4);
+    return list.filter(r => (r.date||"").slice(0,4)===year);
+  }
+
+  return list.filter(r=>(r.date||"").slice(0,7)===month);
+}
+function renderSummary(filtered){
+  updateTraceStats();
+  updateGeneralStats();
+  if(traceMode){
+    const end=$("traceDate").value;
+    const start=end?minusMonths(end,3):"";
+    const scope=$("traceScope").value;
+    $("tableTitle").textContent=`支鏡 ${scope || "—"}｜3 個月使用名單`;
+    $("tableSub").textContent=end
+      ? `${start} ～ ${end}，共 ${filtered.length} 筆`
+      : `請選擇指定日期與支鏡編號`;
+    return;
+  }
+
+  const month=$("monthFilter").value || currentMonth();
+  const mode=$("generalStatsMode").value;
+
+  if(showAll){
+    $("tableTitle").textContent="全部登記資料";
+    $("tableSub").textContent=`目前顯示全部資料，共 ${filtered.length} 筆`;
+  }else if(mode==="year"){
+    const year=month.slice(0,4);
+    $("tableTitle").textContent=`${year} 年登記資料`;
+    $("tableSub").textContent=`目前顯示 ${year} 年全部資料，共 ${filtered.length} 筆`;
+  }else{
+    $("tableTitle").textContent=`${month.slice(0,4)} 年 ${Number(month.slice(5,7))} 月登記資料`;
+    $("tableSub").textContent=`目前顯示 ${month}，共 ${filtered.length} 筆`;
+  }
+}
+function render(){
+  const filtered=getFilteredRecords();
+  renderSummary(filtered);
+  if(!filtered.length){
+    $("body").innerHTML='<tr><td colspan="24" class="empty">目前篩選條件下尚無資料，請由左側輸入後按「儲存並新增一列」。</td></tr>';
+    return;
+  }
+  $("body").innerHTML=filtered.map((r,i)=>`
+    <tr data-id="${r.id}" class="${editingId===r.id?'selected-row':''}">
+      <td class="center action-col"><button class="secondary editBtn">修改</button></td>
+      <td class="center">${i+1}</td>
+      <td>${esc(r.date)}</td><td>${esc(r.ctMode==="date"?r.ctDate:"無")}</td><td>${esc(r.exam)}</td><td>${esc(r.source)}</td>
+      <td>${esc(r.bed)}</td><td>${esc(r.chartNo)}</td>
+      <td><span class="patient-name">${esc(r.name)}</span></td>
+      <td>${esc(r.attendance||"")}</td>
+      <td class="center">${mark(r.timeout)}</td><td class="center">${mark(r.signout)}</td><td>${esc(r.sedation)}</td>
+      <td class="small">${r.consentScope?"支鏡<br>":""}${r.consentSed?"鎮靜":""}</td>
+      <td class="small">${r.eduScope?"支鏡<br>":""}${r.eduSed?"鎮靜":""}</td>
+      <td>${esc(r.pain)}</td><td>${esc(r.medAssessment)}</td><td>${esc(r.ebus)}</td>
+      <td>${esc(r.posted)}</td>
+      <td class="small">${r.bal?"BAL<br>":""}${r.biopsy?"Biopsy":""}</td>
+      <td>${esc(r.scopeNo)}</td><td>${esc(r.doctor)}</td><td>${esc(r.operator)}</td><td>${esc(r.memo)}</td>
+    </tr>`).join("");
+
+  document.querySelectorAll(".editBtn").forEach(btn=>{
+    btn.onclick=e=>{
+      e.stopPropagation();
+      const id=btn.closest("tr").dataset.id;
+      fillForm(records.find(r=>r.id===id));
+    };
+  });
+  document.querySelectorAll("#body tr").forEach(tr=>{
+    tr.onclick=()=>{
+      const r=records.find(x=>x.id===tr.dataset.id);
+      if(r) fillForm(r);
+    };
+  });
+}
+
+
+
+
+const NHI_POINT_TABLE={
+  "28006C":{name:"支氣管鏡檢查",points:2938},
+  "28029C":{name:"內視鏡超音波",points:750},
+  "28030C":{name:"經內視鏡切片（每一診次）",points:940},
+  "28040B":{name:"支氣管內視鏡超音波",points:7365},
+  "28041B":{name:"支氣管內視鏡超音波導引縱膈淋巴節定位切片術（TBNA）",points:14198}
+};
+
+function recordBillingCodes(r){
+  if(!r || (r.attendance||"")==="未報到") return [];
+
+  // TBNA 使用唯一代碼 28041B
+  if((r.exam||"")==="TBNA") return ["28041B"];
+
+  if((r.exam||"")!=="支氣管鏡") return [];
+
+  const codes=[];
+  const ebus=r.ebus||"";
+  const hasBiopsy=!!r.biopsy;
+
+  if(ebus==="無"){
+    codes.push("28006C");
+    if(hasBiopsy) codes.push("28030C");
+    return codes;
+  }
+
+  if(ebus==="有"){
+    if((r.ctMode||"")==="date" && r.ctDate && r.date){
+      const within6=monthsApartWithinSix(r.ctDate,r.date);
+      if(within6){
+        codes.push("28040B");
+        if(hasBiopsy) codes.push("28030C");
+        return codes;
+      }
+    }
+    codes.push("28006C","28029C");
+    if(hasBiopsy) codes.push("28030C");
+    return codes;
+  }
+
+  return [];
+}
+
+function nhiPoolForMonth(month){
+  return records.filter(r=>(r.date||"").slice(0,7)===month);
+}
+function nhiPoolForYear(year){
+  return records.filter(r=>(r.date||"").slice(0,4)===year);
+}
+function calculateNhiPoints(pool){
+  const counts={};
+  Object.keys(NHI_POINT_TABLE).forEach(k=>counts[k]=0);
+  let estimatedCases=0;
+  let unestimatedCases=0;
+
+  pool.forEach(r=>{
+    if((r.attendance||"")==="未報到") return;
+    const codes=recordBillingCodes(r);
+    if(codes.length){
+      estimatedCases++;
+      codes.forEach(c=>{
+        if(counts[c]===undefined) counts[c]=0;
+        counts[c]++;
+      });
+    }else if((r.name||"").trim()){
+      unestimatedCases++;
+    }
+  });
+
+  let totalPoints=0;
+  Object.entries(counts).forEach(([code,count])=>{
+    const p=NHI_POINT_TABLE[code]?.points||0;
+    totalPoints += count*p;
+  });
+
+  return {counts,estimatedCases,unestimatedCases,totalPoints};
+}
+function fmtInt(n){
+  return Number(n||0).toLocaleString("zh-TW",{maximumFractionDigits:0});
+}
+function renderNhiRows(result){
+  const codes=Object.keys(NHI_POINT_TABLE);
+  $("nhiPointsBody").innerHTML=codes.map(code=>{
+    const info=NHI_POINT_TABLE[code];
+    const count=result.counts[code]||0;
+    const subtotal=count*info.points;
+    return `<tr>
+      <td><strong>${code}</strong></td>
+      <td>${info.name}</td>
+      <td>${fmtInt(info.points)}</td>
+      <td>${fmtInt(count)}</td>
+      <td><strong>${fmtInt(subtotal)}</strong></td>
+    </tr>`;
+  }).join("");
+}
+function updateNhiPointEstimate(){
+  if(!$("nhiPointsBody")) return;
+  const mode=$("statsChartMode").value;
+  const month=$("statsPageMonth").value || currentMonth();
+  const pointValue=Math.max(0,Number($("nhiPointValue").value)||0);
+  const compareBox=$("nhiCompareSummary");
+
+  if(mode==="compare"){
+    const yearA=$("compareYearA").value;
+    const yearB=$("compareYearB").value;
+    const a=calculateNhiPoints(nhiPoolForYear(yearA));
+    const b=calculateNhiPoints(nhiPoolForYear(yearB));
+    $("nhiPointsScope").textContent=`年度比較：${yearA} vs ${yearB}`;
+    $("nhiEstimatedCases").textContent=`${a.estimatedCases} / ${b.estimatedCases}`;
+    $("nhiUnestimatedCases").textContent=`${a.unestimatedCases} / ${b.unestimatedCases}`;
+    $("nhiTotalPoints").textContent=`${fmtInt(a.totalPoints)} / ${fmtInt(b.totalPoints)}`;
+    $("nhiTotalAmount").textContent=`NT$ ${fmtInt(a.totalPoints*pointValue)} / ${fmtInt(b.totalPoints*pointValue)}`;
+    compareBox.innerHTML=`
+      <div class="nhi-year-box"><strong>${yearA}</strong><br>估算支付點數：<strong>${fmtInt(a.totalPoints)}</strong><br>估算金額：<strong>NT$ ${fmtInt(a.totalPoints*pointValue)}</strong></div>
+      <div class="nhi-year-box"><strong>${yearB}</strong><br>估算支付點數：<strong>${fmtInt(b.totalPoints)}</strong><br>估算金額：<strong>NT$ ${fmtInt(b.totalPoints*pointValue)}</strong></div>`;
+    compareBox.classList.add("show");
+
+    // 表格以兩年度合併次數呈現，詳細年度總額已在上方分開顯示
+    const merged={counts:{},estimatedCases:a.estimatedCases+b.estimatedCases,unestimatedCases:a.unestimatedCases+b.unestimatedCases,totalPoints:a.totalPoints+b.totalPoints};
+    Object.keys(NHI_POINT_TABLE).forEach(c=>merged.counts[c]=(a.counts[c]||0)+(b.counts[c]||0));
+    renderNhiRows(merged);
+    return;
+  }
+
+  compareBox.classList.remove("show");
+  compareBox.innerHTML="";
+
+  let pool,scopeText;
+  if(mode==="year"){
+    const year=month.slice(0,4);
+    pool=nhiPoolForYear(year);
+    scopeText=`${year} 年全部登記資料`;
+  }else{
+    pool=nhiPoolForMonth(month);
+    scopeText=`${month.slice(0,4)} 年 ${Number(month.slice(5,7))} 月`;
+  }
+
+  const result=calculateNhiPoints(pool);
+  $("nhiPointsScope").textContent=`${scopeText}｜依建議入帳代碼估算`;
+  $("nhiEstimatedCases").textContent=String(result.estimatedCases);
+  $("nhiUnestimatedCases").textContent=String(result.unestimatedCases);
+  $("nhiTotalPoints").textContent=fmtInt(result.totalPoints);
+  $("nhiTotalAmount").textContent=`NT$ ${fmtInt(result.totalPoints*pointValue)}`;
+  renderNhiRows(result);
+}
+
+
+const METRICS={
+  sedation:{label:"鎮靜",match:r=>(r.sedation||"")==="有",unit:"人"},
+  ebus:{label:"EBUS",match:r=>(r.ebus||"")==="有",unit:"次"},
+  bal:{label:"BAL",match:r=>!!r.bal,unit:"次"},
+  biopsy:{label:"Biopsy",match:r=>!!r.biopsy,unit:"次"},
+  medAssessment:{label:"用藥評估（是）",match:r=>(r.medAssessment||"")==="是",unit:"人"},
+  examBronchoscopy:{label:"支氣管鏡檢查",match:r=>(r.exam||"")==="支氣管鏡",unit:"人"},
+  examTBNA:{label:"TBNA",match:r=>(r.exam||"")==="TBNA",unit:"人"},
+  sourceOPD:{label:"病患來源 OPD",match:r=>(r.source||"")==="OPD",unit:"人"},
+  sourceER:{label:"病患來源 ER",match:r=>(r.source||"")==="ER",unit:"人"},
+  sourceWard:{label:"病患來源 Ward",match:r=>(r.source||"")==="Ward",unit:"人"},
+  sourceICU:{label:"病患來源 ICU",match:r=>(r.source||"")==="ICU",unit:"人"},
+  scopeA:{label:"A 支鏡",match:r=>(r.scopeNo||"")==="A",unit:"次"},
+  scopeB:{label:"B 支鏡",match:r=>(r.scopeNo||"")==="B",unit:"次"},
+  scopeC:{label:"C 支鏡",match:r=>(r.scopeNo||"")==="C",unit:"次"},
+  scopeD:{label:"D 支鏡",match:r=>(r.scopeNo||"")==="D",unit:"次"},
+  scope290F:{label:"290F 支鏡",match:r=>(r.scopeNo||"")==="290F",unit:"次"},
+  "doctor蔡英明":{label:"檢查醫師－蔡英明",match:r=>(r.doctor||"")==="蔡英明",unit:"人"},
+  "doctor魏伯儒":{label:"檢查醫師－魏伯儒",match:r=>(r.doctor||"")==="魏伯儒",unit:"人"},
+  "doctor陳家閔":{label:"檢查醫師－陳家閔",match:r=>(r.doctor||"")==="陳家閔",unit:"人"},
+  "doctor馬瑞陽":{label:"檢查醫師－馬瑞陽",match:r=>(r.doctor||"")==="馬瑞陽",unit:"人"},
+  "doctor許恩齊":{label:"檢查醫師－許恩齊",match:r=>(r.doctor||"")==="許恩齊",unit:"人"},
+  "operator蘇淑惠":{label:"執行人員－蘇淑惠",match:r=>(r.operator||"")==="蘇淑惠",unit:"人"},
+  "operator陳懷恩":{label:"執行人員－陳懷恩",match:r=>(r.operator||"")==="陳懷恩",unit:"人"},
+  "operator翼昱嫈":{label:"執行人員－翼昱嫈",match:r=>(r.operator||"")==="翼昱嫈",unit:"人"},
+  "operator葉睿豐":{label:"執行人員－葉睿豐",match:r=>(r.operator||"")==="葉睿豐",unit:"人"},
+  "operator林佩樺":{label:"執行人員－林佩樺",match:r=>(r.operator||"")==="林佩樺",unit:"人"}
+};
+const GROUPS={
+  procedure:{label:"處置／評估", items:[
+    {label:"鎮靜(有)", match:r=>(r.sedation||"")==="有"},
+    {label:"EBUS(有)", match:r=>(r.ebus||"")==="有"},
+    {label:"BAL", match:r=>!!r.bal},
+    {label:"Biopsy", match:r=>!!r.biopsy},
+    {label:"用藥評估(是)", match:r=>(r.medAssessment||"")==="是"},
+  ]},
+  exam:{label:"檢查項目", items:[
+    {label:"支氣管鏡", match:r=>(r.exam||"")==="支氣管鏡"},
+    {label:"TBNA", match:r=>(r.exam||"")==="TBNA"},
+  ]},
+  source:{label:"病患來源", items:[
+    {label:"OPD", match:r=>(r.source||"")==="OPD"},
+    {label:"ER", match:r=>(r.source||"")==="ER"},
+    {label:"Ward", match:r=>(r.source||"")==="Ward"},
+    {label:"ICU", match:r=>(r.source||"")==="ICU"},
+  ]},
+  scope:{label:"支鏡編號", items:[
+    {label:"A", match:r=>(r.scopeNo||"")==="A"},
+    {label:"B", match:r=>(r.scopeNo||"")==="B"},
+    {label:"C", match:r=>(r.scopeNo||"")==="C"},
+    {label:"D", match:r=>(r.scopeNo||"")==="D"},
+    {label:"290F", match:r=>(r.scopeNo||"")==="290F"},
+  ]},
+  doctor:{label:"檢查醫師", items:[
+    {label:"蔡英明", match:r=>(r.doctor||"")==="蔡英明"},
+    {label:"魏伯儒", match:r=>(r.doctor||"")==="魏伯儒"},
+    {label:"陳家閔", match:r=>(r.doctor||"")==="陳家閔"},
+    {label:"馬瑞陽", match:r=>(r.doctor||"")==="馬瑞陽"},
+    {label:"許恩齊", match:r=>(r.doctor||"")==="許恩齊"},
+  ]},
+  operator:{label:"執行人員", items:[
+    {label:"蘇淑惠", match:r=>(r.operator||"")==="蘇淑惠"},
+    {label:"陳懷恩", match:r=>(r.operator||"")==="陳懷恩"},
+    {label:"翼昱嫈", match:r=>(r.operator||"")==="翼昱嫈"},
+    {label:"葉睿豐", match:r=>(r.operator||"")==="葉睿豐"},
+    {label:"林佩樺", match:r=>(r.operator||"")==="林佩樺"},
+  ]},
+};
+const BAR_COLORS=["#5b9277","#88ab9a","#a9c0b4","#d5e4dc","#7ea4bb","#d0b090"];
+
+function statRate(n,total){return total? n/total*100:0}
+function fmtRate(v){return v.toFixed(1).replace(/\.0$/,"")+"%"}
+function availableYears(){
+  const ys=[...new Set(records.map(r=>(r.date||"").slice(0,4)).filter(y=>/^\d{4}$/.test(y)))].sort();
+  const now=currentMonth().slice(0,4);
+  if(!ys.includes(now)) ys.push(now);
+  return ys.sort();
+}
+function fillCompareYears(){
+  const years=availableYears();
+  const html=years.map(y=>`<option>${y}</option>`).join("");
+  $("compareYearA").innerHTML=html;
+  $("compareYearB").innerHTML=html;
+  const current=($("statsPageMonth").value||currentMonth()).slice(0,4);
+  $("compareYearA").value=years.includes(current)?current:years[years.length-1];
+  const idx=years.indexOf($("compareYearA").value);
+  $("compareYearB").value=idx>0?years[idx-1]:$("compareYearA").value;
+}
+function setStatsModeUI(){
+  const chartMode=$("statsChartMode").value;
+  const viewMode=$("statsViewMode").value;
+  $("statsMonthField").style.display=chartMode==="compare"?"none":"flex";
+  document.querySelectorAll(".stats-compare-field").forEach(x=>x.style.display=chartMode==="compare"?"flex":"none");
+  $("statsMetricField").style.display=viewMode==="item"?"flex":"none";
+  $("statsGroupField").style.display=viewMode==="group"?"flex":"none";
+}
+function monthPool(year,monthIndex){
+  const ym=`${year}-${String(monthIndex+1).padStart(2,"0")}`;
+  return records.filter(r=>(r.date||"").slice(0,7)===ym);
+}
+function setKpiValues(count,rate,total){
+  $("chartCount").textContent=String(count);
+  $("chartRate").textContent=fmtRate(rate);
+  $("chartTotal").textContent=String(total);
+}
+function comboSvg(data,series){
+  const W=1000,H=440,L=65,R=65,T=30,B=55,plotW=W-L-R,plotH=H-T-B;
+  const maxCount=Math.max(1,...data.flatMap(d=>series.map(s=>d[s.countKey]||0)));
+  const yCount=v=>T+plotH-(v/maxCount)*plotH;
+  const yRate=v=>T+plotH-(v/100)*plotH;
+  const step=plotW/data.length;
+  const groupWidth=Math.min(54,step*.72);
+  const barW=groupWidth/series.length;
+  let svg=`<svg viewBox="0 0 ${W} ${H}">`;
+  for(let k=0;k<=5;k++){
+    const y=T+plotH*k/5;
+    svg+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="#e6ece8" stroke-width="1"/>
+      <text x="${L-10}" y="${y+4}" text-anchor="end" class="axis-label">${Math.round(maxCount*(5-k)/5)}</text>
+      <text x="${W-R+10}" y="${y+4}" class="axis-label">${Math.round(100*(5-k)/5)}%</text>`;
+  }
+  svg+=`<text x="16" y="${T+plotH/2}" transform="rotate(-90 16 ${T+plotH/2})" text-anchor="middle" class="axis-title">次數</text>
+        <text x="${W-12}" y="${T+plotH/2}" transform="rotate(90 ${W-12} ${T+plotH/2})" text-anchor="middle" class="axis-title">比率</text>`;
+  data.forEach((d,i)=>{
+    const xCenter=L+step*(i+.5);
+    series.forEach((s,si)=>{
+      const v=d[s.countKey]||0,bh=plotH-(yCount(v)-T);
+      const x=xCenter-groupWidth/2+si*barW;
+      svg+=`<rect x="${x}" y="${yCount(v)}" width="${Math.max(4,barW-4)}" height="${bh}" rx="3" fill="${s.bar}" opacity="${si===0?0.92:0.72}"/>`;
+      if(v>0) svg+=`<text x="${x+(barW-4)/2}" y="${Math.max(T+10,yCount(v)-5)}" text-anchor="middle" class="data-label">${v}</text>`;
+    });
+    svg+=`<text x="${xCenter}" y="${H-25}" text-anchor="middle" class="axis-label">${d.label||d.month+"月"}</text>`;
+  });
+  series.forEach((s,si)=>{
+    const pts=data.map((d,i)=>`${L+step*(i+.5)},${yRate(d[s.rateKey]||0)}`).join(" ");
+    svg+=`<polyline points="${pts}" fill="none" stroke="${s.line}" stroke-width="3" ${si?"stroke-dasharray='7 5'":""}/>`;
+    data.forEach((d,i)=>{
+      const x=L+step*(i+.5),y=yRate(d[s.rateKey]||0);
+      svg+=`<circle cx="${x}" cy="${y}" r="4" fill="${s.line}"/>`;
+    });
+  });
+  svg+=`</svg>`;
+  return svg;
+}
+function verticalBarSvg(items,title){
+  const W=1000,H=440,L=55,R=40,T=30,B=95,plotW=W-L-R,plotH=H-T-B;
+  const maxCount=Math.max(1,...items.map(x=>x.count));
+  const y=v=>T+plotH-(v/maxCount)*plotH;
+  const step=plotW/items.length;
+  const barW=Math.min(72,step*.58);
+  let svg=`<svg viewBox="0 0 ${W} ${H}">`;
+  for(let k=0;k<=5;k++){
+    const yy=T+plotH*k/5;
+    svg+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="#e6ece8" stroke-width="1"/>
+      <text x="${L-10}" y="${yy+4}" text-anchor="end" class="axis-label">${Math.round(maxCount*(5-k)/5)}</text>`;
+  }
+  items.forEach((item,i)=>{
+    const x=L+step*(i+.5)-barW/2, h=plotH-(y(item.count)-T), cx=L+step*(i+.5);
+    svg+=`<rect x="${x}" y="${y(item.count)}" width="${barW}" height="${h}" rx="4" fill="${BAR_COLORS[i % BAR_COLORS.length]}"/>`;
+    svg+=`<text x="${cx}" y="${Math.max(T+12,y(item.count)-6)}" text-anchor="middle" class="data-label">${item.count}</text>`;
+    svg+=`<text x="${cx}" y="${H-48}" text-anchor="middle" class="axis-label">${item.label}</text>`;
+    svg+=`<text x="${cx}" y="${H-28}" text-anchor="middle" class="axis-label">${fmtRate(item.rate)}</text>`;
+  });
+  svg+=`</svg>`;
+  return svg;
+}
+function groupedBarSvg(items, yearA, yearB){
+  const W=1000,H=440,L=55,R=40,T=30,B=95,plotW=W-L-R,plotH=H-T-B;
+  const maxCount=Math.max(1,...items.flatMap(x=>[x.countA,x.countB]));
+  const y=v=>T+plotH-(v/maxCount)*plotH;
+  const step=plotW/items.length;
+  const groupW=Math.min(86,step*.72), barW=groupW/2-5;
+  let svg=`<svg viewBox="0 0 ${W} ${H}">`;
+  for(let k=0;k<=5;k++){
+    const yy=T+plotH*k/5;
+    svg+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="#e6ece8" stroke-width="1"/>
+      <text x="${L-10}" y="${yy+4}" text-anchor="end" class="axis-label">${Math.round(maxCount*(5-k)/5)}</text>`;
+  }
+  items.forEach((item,i)=>{
+    const cx=L+step*(i+.5), x1=cx-groupW/2, x2=cx+2;
+    const h1=plotH-(y(item.countA)-T), h2=plotH-(y(item.countB)-T);
+    svg+=`<rect x="${x1}" y="${y(item.countA)}" width="${barW}" height="${h1}" rx="4" fill="#5b9277"/>`;
+    svg+=`<rect x="${x2}" y="${y(item.countB)}" width="${barW}" height="${h2}" rx="4" fill="#9ab7a8"/>`;
+    if(item.countA>0) svg+=`<text x="${x1+barW/2}" y="${Math.max(T+12,y(item.countA)-6)}" text-anchor="middle" class="data-label">${item.countA}</text>`;
+    if(item.countB>0) svg+=`<text x="${x2+barW/2}" y="${Math.max(T+12,y(item.countB)-6)}" text-anchor="middle" class="data-label">${item.countB}</text>`;
+    svg+=`<text x="${cx}" y="${H-48}" text-anchor="middle" class="axis-label">${item.label}</text>`;
+    svg+=`<text x="${cx}" y="${H-28}" text-anchor="middle" class="axis-label">${fmtRate(item.rateA)} / ${fmtRate(item.rateB)}</text>`;
+  });
+  svg+=`</svg>`;
+  return svg;
+}
+function renderPie(metric,month){
+  const pool=records.filter(r=>(r.date||"").slice(0,7)===month);
+  const count=pool.filter(metric.match).length,total=pool.length,other=Math.max(0,total-count);
+  const rate=statRate(count,total);
+  setKpiValues(count,rate,total);
+  $("statsChartTitle").textContent=`${month.slice(0,4)} 年 ${Number(month.slice(5,7))} 月｜${metric.label}`;
+  $("statsChartSubtitle").textContent="單月統計以圓餅圖呈現該項目占全部登記資料的比例";
+  $("statsChartLegend").innerHTML=`<span class="legend-item"><i class="legend-swatch"></i>${metric.label}</span><span class="legend-item"><i class="legend-swatch" style="background:#dce6e1"></i>其他</span>`;
+  const cx=430,cy=215,r=150;
+  if(total===0){
+    $("statsSvgWrap").innerHTML=`<svg viewBox="0 0 860 430"><text x="430" y="215" text-anchor="middle" class="pie-label">此月份尚無登記資料</text></svg>`;
+    $("statsChartNote").textContent="";
+    return;
+  }
+  const angle=rate/100*360;
+  const polar=(deg)=>{const a=(deg-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]};
+  const [x1,y1]=polar(0),[x2,y2]=polar(angle);
+  const large=angle>180?1:0;
+  let slices="";
+  if(count===0){
+    slices=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#dce6e1"/>`;
+  }else if(count===total){
+    slices=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#5b9277"/>`;
+  }else{
+    slices=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#dce6e1"/>
+      <path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z" fill="#5b9277"/>`;
+  }
+  $("statsSvgWrap").innerHTML=`<svg viewBox="0 0 860 430">
+    ${slices}
+    <circle cx="${cx}" cy="${cy}" r="82" fill="white"/>
+    <text x="${cx}" y="${cy-8}" text-anchor="middle" class="pie-value">${fmtRate(rate)}</text>
+    <text x="${cx}" y="${cy+25}" text-anchor="middle" class="pie-label">${count} / ${total}</text>
+  </svg>`;
+  $("statsChartNote").textContent=`${metric.label}：${count} ${metric.unit}；該月總登記 ${total} 筆。`;
+}
+function renderYearChart(metric,year){
+  const data=Array.from({length:12},(_,i)=>{
+    const pool=monthPool(year,i),count=pool.filter(metric.match).length,total=pool.length;
+    return {month:i+1,count,total,rate:statRate(count,total)};
+  });
+  const yearPool=records.filter(r=>(r.date||"").slice(0,4)===year);
+  const yearCount=yearPool.filter(metric.match).length;
+  setKpiValues(yearCount,statRate(yearCount,yearPool.length),yearPool.length);
+  $("statsChartTitle").textContent=`${year} 年｜${metric.label}`;
+  $("statsChartSubtitle").textContent="長條顯示每月次數，折線顯示每月比率，可直接觀察全年趨勢";
+  $("statsChartLegend").innerHTML=`<span class="legend-item"><i class="legend-swatch"></i>每月次數</span><span class="legend-item"><i class="legend-line"></i>每月比率</span>`;
+  $("statsSvgWrap").innerHTML=comboSvg(data,[{countKey:"count",rateKey:"rate",bar:"#5b9277",line:"#a46645"}]);
+  $("statsChartNote").textContent=`年度合計：${yearCount} ${metric.unit}／${yearPool.length} 筆，年度比率 ${fmtRate(statRate(yearCount,yearPool.length))}。`;
+}
+function renderCompareChart(metric,yearA,yearB){
+  const data=Array.from({length:12},(_,i)=>{
+    const pa=monthPool(yearA,i),pb=monthPool(yearB,i);
+    const ca=pa.filter(metric.match).length,cb=pb.filter(metric.match).length;
+    return {month:i+1,countA:ca,rateA:statRate(ca,pa.length),countB:cb,rateB:statRate(cb,pb.length)};
+  });
+  const pa=records.filter(r=>(r.date||"").slice(0,4)===yearA),pb=records.filter(r=>(r.date||"").slice(0,4)===yearB);
+  const ca=pa.filter(metric.match).length,cb=pb.filter(metric.match).length;
+  $("chartCount").textContent=`${ca} / ${cb}`;
+  $("chartRate").textContent=`${fmtRate(statRate(ca,pa.length))} / ${fmtRate(statRate(cb,pb.length))}`;
+  $("chartTotal").textContent=`${pa.length} / ${pb.length}`;
+  $("statsChartTitle").textContent=`${metric.label}｜${yearA} vs ${yearB}`;
+  $("statsChartSubtitle").textContent="年度間比較：以月份為 X 軸，長條比較次數，折線比較比率";
+  $("statsChartLegend").innerHTML=`
+    <span class="legend-item"><i class="legend-swatch"></i>${yearA} 次數</span>
+    <span class="legend-item"><i class="legend-swatch-alt"></i>${yearB} 次數</span>
+    <span class="legend-item"><i class="legend-line"></i>${yearA} 比率</span>
+    <span class="legend-item"><i class="legend-line-alt"></i>${yearB} 比率</span>`;
+  $("statsSvgWrap").innerHTML=comboSvg(data,[
+    {countKey:"countA",rateKey:"rateA",bar:"#5b9277",line:"#a46645"},
+    {countKey:"countB",rateKey:"rateB",bar:"#9ab7a8",line:"#6e7eaa"}
+  ]);
+  $("statsChartNote").textContent=`${yearA}：${ca} ${metric.unit}／${pa.length} 筆（${fmtRate(statRate(ca,pa.length))}）；${yearB}：${cb} ${metric.unit}／${pb.length} 筆（${fmtRate(statRate(cb,pb.length))}）。`;
+}
+function groupDataForPool(groupKey,pool){
+  const group=GROUPS[groupKey];
+  const total=pool.length;
+  return group.items.map((item,idx)=>{
+    const count=pool.filter(item.match).length;
+    return {label:item.label,count,rate:statRate(count,total),color:BAR_COLORS[idx % BAR_COLORS.length]};
+  });
+}
+function renderGroupMonth(groupKey,month){
+  const pool=records.filter(r=>(r.date||"").slice(0,7)===month);
+  const items=groupDataForPool(groupKey,pool);
+  const top=items.reduce((a,b)=>a.count>=b.count?a:b,{label:"—",count:0,rate:0});
+  $("chartCount").textContent=String(top.count);
+  $("chartRate").textContent=fmtRate(top.rate);
+  $("chartTotal").textContent=String(pool.length);
+  $("statsChartTitle").textContent=`${month.slice(0,4)} 年 ${Number(month.slice(5,7))} 月｜${GROUPS[groupKey].label}比較`;
+  $("statsChartSubtitle").textContent="單月統計：同一大項內各個值一起比較，顯示各值次數與占比";
+  $("statsChartLegend").innerHTML=items.map((x,i)=>`<span class="legend-item"><i class="legend-swatch" style="background:${BAR_COLORS[i%BAR_COLORS.length]}"></i>${x.label}</span>`).join("");
+  $("statsSvgWrap").innerHTML=verticalBarSvg(items,GROUPS[groupKey].label);
+  $("statsChartNote").textContent=`最高值：${top.label}，${top.count} 筆，比例 ${fmtRate(top.rate)}。`;
+}
+function renderGroupYear(groupKey,year){
+  const pool=records.filter(r=>(r.date||"").slice(0,4)===year);
+  const items=groupDataForPool(groupKey,pool);
+  const top=items.reduce((a,b)=>a.count>=b.count?a:b,{label:"—",count:0,rate:0});
+  $("chartCount").textContent=String(top.count);
+  $("chartRate").textContent=fmtRate(top.rate);
+  $("chartTotal").textContent=String(pool.length);
+  $("statsChartTitle").textContent=`${year} 年｜${GROUPS[groupKey].label}比較`;
+  $("statsChartSubtitle").textContent="年度統計：比較該年度中，同一大項各個值的累積次數與比率";
+  $("statsChartLegend").innerHTML=items.map((x,i)=>`<span class="legend-item"><i class="legend-swatch" style="background:${BAR_COLORS[i%BAR_COLORS.length]}"></i>${x.label}</span>`).join("");
+  $("statsSvgWrap").innerHTML=verticalBarSvg(items,GROUPS[groupKey].label);
+  $("statsChartNote").textContent=`最高值：${top.label}，${top.count} 筆，比例 ${fmtRate(top.rate)}。`;
+}
+function renderGroupCompare(groupKey,yearA,yearB){
+  const poolA=records.filter(r=>(r.date||"").slice(0,4)===yearA);
+  const poolB=records.filter(r=>(r.date||"").slice(0,4)===yearB);
+  const totalA=poolA.length,totalB=poolB.length;
+  const group=GROUPS[groupKey];
+  const items=group.items.map(item=>{
+    const countA=poolA.filter(item.match).length;
+    const countB=poolB.filter(item.match).length;
+    return {label:item.label,countA,countB,rateA:statRate(countA,totalA),rateB:statRate(countB,totalB)};
+  });
+  const topA=items.reduce((a,b)=>a.countA>=b.countA?a:b,items[0]||{label:"—",countA:0,rateA:0});
+  const topB=items.reduce((a,b)=>a.countB>=b.countB?a:b,items[0]||{label:"—",countB:0,rateB:0});
+  $("chartCount").textContent=`${topA.countA} / ${topB.countB}`;
+  $("chartRate").textContent=`${fmtRate(topA.rateA)} / ${fmtRate(topB.rateB)}`;
+  $("chartTotal").textContent=`${totalA} / ${totalB}`;
+  $("statsChartTitle").textContent=`${group.label}比較｜${yearA} vs ${yearB}`;
+  $("statsChartSubtitle").textContent="年度間比較：同一大項內各值在兩個年度中的次數與比率比較";
+  $("statsChartLegend").innerHTML=`
+    <span class="legend-item"><i class="legend-swatch"></i>${yearA}</span>
+    <span class="legend-item"><i class="legend-swatch-alt"></i>${yearB}</span>`;
+  $("statsSvgWrap").innerHTML=groupedBarSvg(items,yearA,yearB);
+  $("statsChartNote").textContent=`${yearA} 最高：${topA.label} ${topA.countA} 筆（${fmtRate(topA.rateA)}）；${yearB} 最高：${topB.label} ${topB.countB} 筆（${fmtRate(topB.rateB)}）。`;
+}
+function renderStatsPage(){
+  setStatsModeUI();
+  setTimeout(updateNhiPointEstimate,0);
+  const viewMode=$("statsViewMode").value;
+  const mode=$("statsChartMode").value;
+  const month=$("statsPageMonth").value || currentMonth();
+
+  if(viewMode==="group"){
+    const groupKey=$("statsGroup").value;
+    if(mode==="month") renderGroupMonth(groupKey,month);
+    else if(mode==="year") renderGroupYear(groupKey,month.slice(0,4));
+    else renderGroupCompare(groupKey,$("compareYearA").value,$("compareYearB").value);
+    return;
+  }
+
+  const metric=METRICS[$("statsMetric").value] || METRICS.sedation;
+  if(mode==="month") renderPie(metric,month);
+  else if(mode==="year") renderYearChart(metric,month.slice(0,4));
+  else renderCompareChart(metric,$("compareYearA").value,$("compareYearB").value);
+}
+function showStatsPage(){
+  $("statsPageMonth").value=$("monthFilter").value || currentMonth();
+  fillCompareYears();
+  setStatsModeUI();
+  $("mainPage").style.display="none";
+  $("statsPage").classList.add("show");
+  renderStatsPage();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showRegisterPage(){
+  $("statsPage").classList.remove("show");
+  $("mainPage").style.display="";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("openStatsPageBtn").onclick=showStatsPage;
+$("backToRegisterBtn").onclick=showRegisterPage;
+$("nhiPointValue").oninput=updateNhiPointEstimate;
+$("statsViewMode").onchange=renderStatsPage;
+$("statsMetric").onchange=renderStatsPage;
+$("statsGroup").onchange=renderStatsPage;
+$("statsChartMode").onchange=renderStatsPage;
+$("statsPageMonth").onchange=()=>{fillCompareYears();renderStatsPage()};
+$("compareYearA").onchange=renderStatsPage;
+$("compareYearB").onchange=renderStatsPage;
+
+
+function clearPrintMode(){
+  document.body.classList.remove("print-register","print-stats");
+}
+function printRegisterData(){
+  // 列印內容就是目前頁面右側實際顯示的篩選結果
+  const title=$("tableTitle")?.textContent || "登記資料";
+  const sub=$("tableSub")?.textContent || "";
+  $("printRegisterRange").textContent = `${title}　${sub}`;
+  clearPrintMode();
+  document.body.classList.add("print-register");
+  window.print();
+}
+function printStatsPage(){
+  clearPrintMode();
+  document.body.classList.add("print-stats");
+  window.print();
+}
+window.addEventListener("afterprint", clearPrintMode);
+$("printRegisterBtn").onclick=printRegisterData;
+$("printStatsBtn").onclick=printStatsPage;
+
+$("attendance").onchange=updateAttendanceState;
+$("ctMode").onchange=updateCtState;
+$("ctDate").onchange=updateBillingSuggestion;
+$("date").onchange=updateBillingSuggestion;
+$("ebus").onchange=updateBillingSuggestion;
+$("exam").onchange=updateBillingSuggestion;
+$("bal").onchange=updateBillingSuggestion;
+$("biopsy").onchange=updateBillingSuggestion;
+$("generalStatsMode").onchange=()=>{traceMode=false;showAll=false;document.querySelector(".trace-wrap").classList.remove("trace-active");render()};
+$("monthFilter").onchange=()=>{traceMode=false;showAll=false;document.querySelector(".trace-wrap").classList.remove("trace-active");render()};
+$("currentMonthBtn").onclick=()=>{traceMode=false;$("monthFilter").value=currentMonth();showAll=false;document.querySelector(".trace-wrap").classList.remove("trace-active");render()};
+$("showAllBtn").onclick=()=>{traceMode=false;showAll=true;document.querySelector(".trace-wrap").classList.remove("trace-active");render()};
+
+
+$("traceBtn").onclick=()=>{
+  const d=$("traceDate").value;
+  const scope=$("traceScope").value;
+  if(!d){alert("請先選擇指定日期。");return}
+  if(!scope){alert("請先選擇支鏡編號。");return}
+  traceMode=true;
+  showAll=false;
+  document.querySelector(".trace-wrap").classList.add("trace-active");
+  render();
+};
+$("clearTraceBtn").onclick=()=>{
+  traceMode=false;
+  $("traceDate").value=today();
+  $("traceScope").value="";
+  $("monthFilter").value=currentMonth();
+  showAll=false;
+  document.querySelector(".trace-wrap").classList.remove("trace-active");
+  render();
+};
+
+$("saveBtn").onclick=()=>{
+  // 若未選擇報到狀態，但已有資料並執行儲存，自動視為「有報到」
+  if(!$("attendance").value){
+    $("attendance").value="有報到";
+    updateAttendanceState();
+  }
+  const r=getData();
+  if(!r.date||!r.name){alert("請至少填寫檢查日與姓名。");return}
+  if(r.attendance!=="未報到" && r.ctMode==="date"&&!r.ctDate){alert("CT 選擇「有」時，請輸入日期。");return}
+  const i=records.findIndex(x=>x.id===r.id);
+  if(i>=0) records[i]=r; else records.push(r);
+  persist();
+  const wasEdit=i>=0;
+  traceMode=false;
+  document.querySelector(".trace-wrap").classList.remove("trace-active");
+  showAll=false;
+  $("monthFilter").value=(r.date||today()).slice(0,7);
+  clearForm();
+  alert(wasEdit?"資料已更新。":"資料已新增，右側已自動增加一列。");
+};
+$("clearBtn").onclick=clearForm;
+$("deleteBtn").onclick=()=>{
+  if(editingId&&confirm("確定刪除此筆資料？")){
+    records=records.filter(r=>r.id!==editingId);
+    persist();clearForm();
+  }
+};
+$("name").oninput=()=>{
+  const q=$("name").value.trim().toLowerCase(),box=$("history");
+  if(!q){box.classList.remove("show");return}
+  const cutoff=new Date();cutoff.setMonth(cutoff.getMonth()-3);
+  const list=records.filter(r=>(r.name||"").toLowerCase().includes(q)&&new Date(r.date)>=cutoff)
+    .sort((a,b)=>(b.date||"").localeCompare(a.date||"")).slice(0,8);
+  if(!list.length){box.classList.remove("show");return}
+  box.innerHTML=list.map(r=>`<div data-id="${r.id}"><b>${esc(r.name)}</b>　${esc(r.date)}<br><small>${esc(r.exam)}／${esc(r.memo)}</small></div>`).join("");
+  box.classList.add("show");
+  box.querySelectorAll("div").forEach(x=>x.onclick=()=>fillForm(records.find(r=>r.id===x.dataset.id)));
+};
+$("csvBtn").onclick=()=>{
+  const shown=getFilteredRecords();
+  const heads=["序號","檢查日","CT","檢查項目","病患來源","床號","病歷號","姓名","報到狀態","Time out","Sign out","鎮靜","支鏡同意書","鎮靜同意書","支鏡衛教","鎮靜衛教","疼痛評估","用藥評估","EBUS","修改入帳","BAL","Biopsy","支鏡編號","檢查醫師","執行人員","備註"];
+  const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const rows=shown.map((r,i)=>[i+1,r.date,r.ctMode==="date"?r.ctDate:"無",r.exam,r.source,r.bed,r.chartNo,r.name,r.attendance,r.timeout?"是":"否",r.signout?"是":"否",r.sedation,r.consentScope?"是":"否",r.consentSed?"是":"否",r.eduScope?"是":"否",r.eduSed?"是":"否",r.pain,r.medAssessment,r.ebus,r.posted,r.bal?"是":"否",r.biopsy?"是":"否",r.scopeNo,r.doctor,r.operator,r.memo]);
+  const csv="\ufeff"+[heads,...rows].map(row=>row.map(q).join(",")).join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="支氣管鏡室病患檢查及衛教登記表.csv";a.click();
+};
+$("backupBtn").onclick=()=>{
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(records,null,2)],{type:"application/json"}));
+  a.download="支氣管鏡室登記表備份.json";a.click();
+};
+$("importBtn").onclick=()=>$("importFile").click();
+$("importFile").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{records=JSON.parse(rd.result);persist();clearForm();alert("匯入完成。")}catch{alert("檔案格式錯誤。")}};
+  rd.readAsText(f);
+};
+
+$("monthFilter").value=currentMonth();
+$("statsPageMonth").value=currentMonth();
+$("traceDate").value=today();
+clearForm();
+updateAttendanceState();
+</script>
+</body>
+</html>
