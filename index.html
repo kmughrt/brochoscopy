@@ -1750,7 +1750,7 @@ table{
         </table>
       </div>
       <div class="nhi-points-note">
-        ※ 此區為「建議入帳」之試算，不等同實際核付結果；未報到案件不列入。TBNA 僅以 28041B 估算。
+        ※ 此區為「建議入帳」之試算，不等同實際核付結果；未報到案件不列入。TBNA 僅以 328041 估算。
       </div>
     </div>
   </section>
@@ -1827,8 +1827,8 @@ function billingCodes(){
   // TBNA 為獨立且唯一的入帳代碼
   if(exam==="TBNA"){
     return {
-      codes:[["28041B","支氣管內視鏡超音波導引縱膈淋巴節定位切片術（TBNA）"]],
-      summary:"TBNA：唯一建議入帳代碼為 28041B。"
+      codes:[["328041","TBNA（院內碼 328041；對應健保碼 28041B）"]],
+      summary:"TBNA：唯一建議入帳代碼為 328041。"
     };
   }
 
@@ -2173,14 +2173,14 @@ const NHI_POINT_TABLE={
   "28029C":{name:"內視鏡超音波",points:750},
   "28030C":{name:"經內視鏡切片（每一診次）",points:940},
   "28040B":{name:"支氣管內視鏡超音波",points:7365},
-  "28041B":{name:"支氣管內視鏡超音波導引縱膈淋巴節定位切片術（TBNA）",points:14198}
+  "328041":{name:"TBNA（院內碼 328041；對應健保碼 28041B）",points:14198}
 };
 
 function recordBillingCodes(r){
   if(!r || (r.attendance||"")==="未報到") return [];
 
-  // TBNA 使用唯一代碼 28041B
-  if((r.exam||"")==="TBNA") return ["28041B"];
+  // TBNA 使用唯一代碼 328041
+  if((r.exam||"")==="TBNA") return ["328041"];
 
   if((r.exam||"")!=="支氣管鏡") return [];
 
