@@ -1316,6 +1316,45 @@ table{
   #recordsPage .card{padding:12px}
 }
 
+
+/* 登記列表的修改按鈕：提高辨識度 */
+.edit-action-btn{
+  background:#f0a12b!important;
+  color:#202020!important;
+  border:2px solid #d48212!important;
+  border-radius:8px!important;
+  font-weight:900!important;
+  box-shadow:0 2px 5px rgba(120,75,0,.22)!important;
+  padding:7px 13px!important;
+  min-width:58px;
+}
+.edit-action-btn:hover{
+  background:#ffd078!important;
+  border-color:#b96d00!important;
+  transform:translateY(-1px);
+}
+@media print{
+  .edit-action-btn{display:none!important}
+}
+
+
+/* 統計頁返回按鈕：高辨識度 */
+.return-action-btn{
+  background:#2563a6!important;
+  color:#fff!important;
+  border:2px solid #174b82!important;
+  border-radius:9px!important;
+  font-weight:900!important;
+  font-size:17px!important;
+  padding:10px 22px!important;
+  min-height:44px;
+  box-shadow:0 2px 6px rgba(20,65,110,.24)!important;
+}
+.return-action-btn:hover{
+  background:#174b82!important;
+  transform:translateY(-1px);
+}
+
 </style>
 </head>
 <body>
@@ -1499,11 +1538,11 @@ table{
       </div>
     </div>
     <div class="toolbar-right">
-      <button class="primary" id="openStatsPageBtn">統計整頁</button>
+      <button class="primary" id="openStatsPageBtn">統計資料</button>
       <button class="secondary" id="csvBtn">匯出目前畫面 CSV</button>
       <button class="secondary" id="backupBtn">備份</button>
       <button class="secondary" id="importBtn">匯入</button>
-      <button class="primary" id="printRegisterBtn" title="A4 橫式列印目前畫面中的登記資料，可於列印視窗選擇「另存為 PDF」">列印登記資料</button>
+      <button class="primary" id="printRegisterBtn" title="A4 橫式列印目前畫面中的登記資料，可於列印視窗選擇「另存為 PDF」">列印</button>
       <input id="importFile" type="file" accept=".json" hidden>
     </div>
   </div>
@@ -1589,7 +1628,7 @@ table{
 
   <section id="statsPage" class="stats-page">
     <div class="stats-page-toolbar">
-      <button class="secondary" id="backToRegisterBtn">← 返回登記表</button>
+      <button class="secondary return-action-btn" id="backToRegisterBtn">← 返回</button>
       <div class="stats-page-title">支氣管鏡室統計總覽</div>
       <button class="secondary" id="printStatsBtn">列印統計頁</button>
     </div>
@@ -2135,7 +2174,7 @@ function render(){
   }
   $("body").innerHTML=filtered.map((r,i)=>`
     <tr data-id="${r.id}" class="${editingId===r.id?'selected-row':''}">
-      <td class="center action-col"><button class="secondary editBtn">修改</button></td>
+      <td class="center action-col"><button class="secondary editBtn edit-action-btn">修改</button></td>
       <td class="center">${i+1}</td>
       <td>${esc(r.date)}</td><td>${esc(r.ctMode==="date"?r.ctDate:"無")}</td><td>${esc(r.exam)}</td><td>${esc(r.source)}</td>
       <td>${esc(r.bed)}</td><td>${esc(r.chartNo)}</td>
