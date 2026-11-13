@@ -811,6 +811,8 @@ table{
 
   /* ===== 登記資料 A4 橫式 ===== */
   body.print-register .header,
+  body.print-register .page-nav,
+  body.print-register #entryPage,
   body.print-register .toolbar,
   body.print-register .form-card,
   body.print-register .summary-bar,
@@ -822,10 +824,10 @@ table{
   body.print-register #mainPage{
     display:block!important;
   }
-  body.print-register .layout{
+  body.print-register #recordsPage{
     display:block!important;
   }
-  body.print-register .layout > .card:last-child{
+  body.print-register #recordsPage > .card{
     display:block!important;
     padding:0!important;
     margin:0!important;
@@ -1075,6 +1077,245 @@ table{
   }
 }
 
+
+.page-nav{
+  display:flex;
+  gap:8px;
+  margin:0 0 14px;
+  padding:6px;
+  background:#edf3ef;
+  border:1px solid #d8e3dc;
+  border-radius:12px;
+}
+.page-tab{
+  border:0;
+  border-radius:8px;
+  padding:10px 20px;
+  font-size:16px;
+  font-weight:900;
+  color:#456052;
+  background:transparent;
+  cursor:pointer;
+}
+.page-tab.active{
+  color:#fff;
+  background:#376b52;
+  box-shadow:0 2px 7px rgba(34,83,58,.18);
+}
+.work-page{width:100%;min-width:0}
+#entryPage .form-card{
+  position:static;
+  max-width:900px;
+  margin:0 auto;
+}
+#recordsPage > .card{
+  width:100%;
+  min-width:0;
+}
+.required-mark{color:#c0392b;font-weight:900}
+.field-invalid input,.field-invalid select{
+  border:2px solid #c0392b!important;
+  background:#fff8f7!important;
+}
+.biopsy-choice{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:5px;
+  font-size:13px;
+  font-weight:700;
+}
+.biopsy-choice select{
+  width:95px!important;
+  min-width:0;
+  padding:5px 7px;
+}
+@media(max-width:600px){
+  .page-tab{flex:1;padding:10px 8px;font-size:14px}
+  #entryPage .form-card{padding:12px}
+}
+
+
+/* ===== 橫式寬版介面與大字體 ===== */
+.wrap{
+  width:100%;
+  max-width:2200px;
+  margin:0 auto;
+  padding:20px clamp(14px,2vw,30px);
+}
+.hospital{font-size:29px;padding:14px}
+.title{font-size:27px;padding:13px}
+.page-nav{
+  width:100%;
+  padding:8px;
+  gap:10px;
+  margin:16px 0;
+}
+.page-tab{
+  min-width:190px;
+  padding:13px 24px;
+  font-size:19px;
+}
+#entryPage .form-card{
+  width:100%;
+  max-width:none;
+  padding:22px;
+  overflow:visible;
+}
+#entryPage .form-card h2{
+  font-size:25px;
+  margin-bottom:18px;
+}
+#entryPage .form-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px 18px;
+  align-items:start;
+}
+#entryPage .field{
+  min-width:0;
+}
+#entryPage .field > label,
+#entryPage .biopsy-choice > span{
+  font-size:18px;
+  line-height:1.45;
+  margin-bottom:7px;
+}
+#entryPage input:not([type="checkbox"]),
+#entryPage select,
+#entryPage textarea{
+  min-height:48px;
+  padding:11px 12px;
+  font-size:18px;
+  line-height:1.35;
+  border-radius:8px;
+}
+#entryPage input[type="checkbox"]{
+  width:21px;
+  height:21px;
+  margin:1px 0 0;
+}
+#entryPage .ct-box{
+  grid-template-columns:88px minmax(0,1fr);
+  gap:10px;
+}
+#entryPage .group-shell{
+  padding:14px;
+}
+#entryPage .group-shell-title{
+  font-size:18px;
+  margin-bottom:12px;
+}
+#entryPage .group-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+#entryPage .group-box{
+  padding:12px 14px;
+}
+#entryPage .group-box h4{
+  font-size:17px;
+  margin-bottom:9px;
+}
+#entryPage .group-box label{
+  grid-template-columns:22px minmax(0,1fr);
+  gap:10px;
+  font-size:16px;
+  line-height:1.5;
+  margin:8px 0;
+}
+#entryPage .billing-suggest-box{
+  padding:14px 16px;
+}
+#entryPage .billing-suggest-title{font-size:19px}
+#entryPage .billing-suggest-sub,
+#entryPage .billing-name,
+#entryPage .billing-empty{font-size:16px}
+#entryPage .billing-code{font-size:17px}
+#entryPage .billing-code-row{
+  grid-template-columns:100px minmax(0,1fr);
+  padding:10px 12px;
+}
+#entryPage textarea{min-height:90px}
+#entryPage .actions{
+  gap:12px;
+  margin-top:18px;
+}
+#entryPage .actions button,
+#entryPage #deleteBtn{
+  min-height:52px;
+  font-size:19px;
+}
+#entryPage .note{
+  font-size:15px;
+  line-height:1.55;
+  margin-top:12px;
+}
+
+/* 登記列表與上方操作區同步放大 */
+#recordsPage .toolbar{
+  gap:14px;
+  margin:16px 0;
+}
+#recordsPage .toolbar button{
+  min-height:44px;
+  padding:10px 16px;
+  font-size:16px;
+}
+#recordsPage .toolbar input,
+#recordsPage .toolbar select{
+  min-height:44px;
+  padding:9px 11px;
+  font-size:16px;
+}
+#recordsPage .month-wrap label,
+#recordsPage .trace-wrap label,
+#recordsPage .trace-label{
+  font-size:16px;
+}
+#recordsPage .card{
+  padding:18px;
+}
+#recordsPage .summary-title{font-size:19px}
+#recordsPage .summary-sub{font-size:15px}
+#recordsPage table th{
+  font-size:16px;
+  line-height:1.35;
+}
+#recordsPage table td{
+  font-size:16px;
+  line-height:1.5;
+}
+#recordsPage .patient-name{font-size:18px}
+#recordsPage .small{font-size:15px}
+
+/* 桌面大螢幕維持橫向多欄；平板與手機自動調整 */
+@media(max-width:1450px){
+  #entryPage .form-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #entryPage .group-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:1000px){
+  .wrap{padding:14px}
+  #entryPage .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #entryPage .group-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:620px){
+  .hospital{font-size:21px;padding:10px}
+  .title{font-size:20px;padding:10px}
+  .page-tab{min-width:0;flex:1;padding:11px 8px;font-size:16px}
+  #entryPage .form-card{padding:14px}
+  #entryPage .form-grid{grid-template-columns:1fr;gap:13px}
+  #entryPage .field.full{grid-column:1}
+  #entryPage .group-grid{grid-template-columns:1fr}
+  #entryPage .field > label,
+  #entryPage .biopsy-choice > span{font-size:17px}
+  #entryPage input:not([type="checkbox"]),
+  #entryPage select,
+  #entryPage textarea{font-size:17px;min-height:46px}
+  #recordsPage .card{padding:12px}
+}
+
 </style>
 </head>
 <body>
@@ -1085,44 +1326,13 @@ table{
   </div>
 
   <div id="mainPage">
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <div class="month-wrap">
-        <label for="monthFilter">顯示月份</label>
-        <input id="monthFilter" type="month">
-        <button class="primary" id="currentMonthBtn">本月資料</button>
-        <button class="secondary" id="showAllBtn">顯示全部</button>
-      </div>
-
-      <div class="trace-wrap">
-        <span class="trace-label">支鏡名單查詢</span>
-        <label for="traceDate">指定日期</label>
-        <input id="traceDate" type="date">
-        <label for="traceScope">支鏡編號</label>
-        <select id="traceScope">
-          <option value="">請選擇</option>
-          <option>A</option>
-          <option>B</option>
-          <option>C</option>
-          <option>D</option>
-          <option>290F</option>
-        </select>
-        <button class="primary" id="traceBtn">查詢往前 3 個月</button>
-        <button class="secondary" id="clearTraceBtn">取消查詢</button>
-      </div>
-    </div>
-    <div class="toolbar-right">
-      <button class="primary" id="openStatsPageBtn">統計整頁</button>
-      <button class="secondary" id="csvBtn">匯出目前畫面 CSV</button>
-      <button class="secondary" id="backupBtn">備份</button>
-      <button class="secondary" id="importBtn">匯入</button>
-      <button class="primary" id="printRegisterBtn" title="A4 橫式列印目前畫面中的登記資料，可於列印視窗選擇「另存為 PDF」">列印登記資料</button>
-      <input id="importFile" type="file" accept=".json" hidden>
-    </div>
+<div class="page-nav">
+    <button type="button" class="page-tab active" id="showEntryPageBtn">登記資料輸入</button>
+    <button type="button" class="page-tab" id="showRecordsPageBtn">登記資料列表</button>
   </div>
 
-  <div class="layout">
-    <section class="card form-card">
+  <section id="entryPage" class="work-page">
+        <section class="card form-card">
       <h2 id="formTitle">登記資料輸入</h2>
       <div class="form-grid">
         <div class="field"><label>檢查日</label><input id="date" type="date"></div>
@@ -1136,8 +1346,8 @@ table{
           </div>
         </div>
 
-        <div class="field"><label>檢查項目</label>
-          <select id="exam">
+        <div class="field"><label>檢查項目 <span class="required-mark">*</span></label>
+          <select id="exam" required aria-required="true">
             <option></option>
             <option>支氣管鏡</option>
             <option>TBNA</option>
@@ -1148,9 +1358,9 @@ table{
         </div>
 
         <div class="field"><label>床號</label><input id="bed"></div>
-        <div class="field"><label>病歷號</label><input id="chartNo"></div>
+        <div class="field"><label>病歷號 <span class="required-mark">*</span></label><input id="chartNo" required aria-required="true"></div>
 
-        <div class="field"><label>姓名（可搜尋近三個月資料）</label><input id="name" placeholder="輸入姓名關鍵字"></div>
+        <div class="field"><label>姓名（可搜尋近三個月資料） <span class="required-mark">*</span></label><input id="name" placeholder="輸入姓名關鍵字" required aria-required="true"></div>
         <div class="field"><label>有無報到</label>
           <select id="attendance">
             <option value=""></option>
@@ -1166,6 +1376,12 @@ table{
         </div>
         <div class="field"><label>EBUS</label>
           <select id="ebus"><option></option><option>有</option><option>無</option></select>
+        </div>
+        <div class="field"><label>有無切片</label>
+          <select id="biopsyStatus">
+            <option value="無" selected>無</option>
+            <option value="有">有</option>
+          </select>
         </div>
 
         <div class="field"><label>疼痛評估</label>
@@ -1184,8 +1400,8 @@ table{
           </select>
         </div>
 
-        <div class="field"><label>檢查醫師</label>
-          <select id="doctor">
+        <div class="field"><label>檢查醫師 <span class="required-mark">*</span></label>
+          <select id="doctor" required aria-required="true">
             <option></option>
             <option>蔡英明</option>
             <option>魏伯儒</option>
@@ -1194,8 +1410,8 @@ table{
             <option>許恩齊</option>
           </select>
         </div>
-        <div class="field"><label>執行人員</label>
-          <select id="operator">
+        <div class="field"><label>執行人員 <span class="required-mark">*</span></label>
+          <select id="operator" required aria-required="true">
             <option></option>
             <option>蘇淑惠</option>
             <option>陳懷恩</option>
@@ -1208,7 +1424,7 @@ table{
         <div class="field full">
           <div class="billing-suggest-box">
             <div class="billing-suggest-title">建議入帳項目</div>
-            <div class="billing-suggest-sub" id="billingRuleSummary">請先完成 EBUS、CT 與檢體項目選擇</div>
+            <div class="billing-suggest-sub" id="billingRuleSummary">請先完成檢查項目、EBUS、CT 與上方「有無切片」選擇</div>
             <div id="billingSuggestion" class="billing-suggestion-list">
               <div class="billing-empty">尚未產生建議</div>
             </div>
@@ -1247,14 +1463,51 @@ table{
       </div>
 
       <div class="actions">
-        <button class="primary" id="saveBtn">儲存並新增一列</button>
+        <button class="primary" id="saveBtn">儲存</button>
         <button class="secondary" id="clearBtn">清除輸入</button>
       </div>
       <button class="danger" id="deleteBtn" style="width:100%;margin-top:8px;display:none">刪除此筆資料</button>
-      <div class="note">上方可快速切換本月資料，或依「指定日期＋支鏡編號」查詢該日期往前 3 個月的單一支鏡使用名單，並同步統計該支鏡當年度與當月份的使用次數及使用率。每次儲存後，右側登記表會自動增加一列。</div>
+      <div class="note">填寫完成按「儲存」後，系統會自動切換至登記資料列表。可由上方頁籤返回輸入頁，或在列表中點選資料進行修改。</div>
     </section>
+  </section>
 
-    <section class="card">
+  <section id="recordsPage" class="work-page" style="display:none">
+      <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="month-wrap">
+        <label for="monthFilter">顯示月份</label>
+        <input id="monthFilter" type="month">
+        <button class="primary" id="currentMonthBtn">本月資料</button>
+        <button class="secondary" id="showAllBtn">顯示全部</button>
+      </div>
+
+      <div class="trace-wrap">
+        <span class="trace-label">支鏡名單查詢</span>
+        <label for="traceDate">指定日期</label>
+        <input id="traceDate" type="date">
+        <label for="traceScope">支鏡編號</label>
+        <select id="traceScope">
+          <option value="">請選擇</option>
+          <option>A</option>
+          <option>B</option>
+          <option>C</option>
+          <option>D</option>
+          <option>290F</option>
+        </select>
+        <button class="primary" id="traceBtn">查詢往前 3 個月</button>
+        <button class="secondary" id="clearTraceBtn">取消查詢</button>
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <button class="primary" id="openStatsPageBtn">統計整頁</button>
+      <button class="secondary" id="csvBtn">匯出目前畫面 CSV</button>
+      <button class="secondary" id="backupBtn">備份</button>
+      <button class="secondary" id="importBtn">匯入</button>
+      <button class="primary" id="printRegisterBtn" title="A4 橫式列印目前畫面中的登記資料，可於列印視窗選擇「另存為 PDF」">列印登記資料</button>
+      <input id="importFile" type="file" accept=".json" hidden>
+    </div>
+  </div>
+        <section class="card">
       <div class="summary-bar">
         <div class="summary-left-panel">
           <div>
@@ -1331,8 +1584,8 @@ table{
         </table>
       </div>
     </section>
-  </div>
-  </div><!-- /mainPage -->
+  </section>
+    </div><!-- /mainPage -->
 
   <section id="statsPage" class="stats-page">
     <div class="stats-page-toolbar">
@@ -1505,22 +1758,31 @@ table{
 const KEY="bronchoscopy_left_input_v3";
 let records=JSON.parse(localStorage.getItem(KEY)||"[]");
 
-records = records.map(r => {
+function normalizeRecord(r){
+  const oldBiopsy = r.biopsy;
+  const biopsyFlag = oldBiopsy === true || oldBiopsy === "有" || oldBiopsy === "是";
+  if (r.biopsyStatus === undefined || r.biopsyStatus === "") {
+    r.biopsyStatus = biopsyFlag ? "有" : "無";
+  }
+  r.biopsy = biopsyFlag;
   if (r.posted === undefined) r.posted = "";
   if (r.medAssessment === undefined) r.medAssessment = "";
   if (r.doctor === undefined) r.doctor = "";
+  if (r.operator === undefined) r.operator = "";
   if (r.attendance === undefined) r.attendance = "";
   return r;
-});
+}
+records = records.map(normalizeRecord);
 
 let editingId=null;
 let showAll=false;
 let traceMode=false;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-const fields=["date","ctMode","ctDate","exam","source","bed","chartNo","name","attendance","sedation","ebus","pain","medAssessment","posted","scopeNo","doctor","operator","memo"];
-const checks=["timeout","signout","consentScope","consentSed","eduScope","eduSed","bal","biopsy"];
+const fields=["date","ctMode","ctDate","exam","source","bed","chartNo","name","attendance","sedation","ebus","biopsyStatus","pain","medAssessment","posted","scopeNo","doctor","operator","memo"];
+const checks=["timeout","signout","consentScope","consentSed","eduScope","eduSed","bal","biopsy","biopsyStatus"];
 
+function hasBiopsyRecord(r){return !!r && (r.biopsy===true || r.biopsy==="有" || r.biopsy==="是")}
 function persist(){localStorage.setItem(KEY,JSON.stringify(records))}
 function today(){return new Date().toISOString().slice(0,10)}
 function currentMonth(){return today().slice(0,7)}
@@ -1552,7 +1814,7 @@ function billingCodes(){
   const ctMode=$("ctMode").value;
   const ctDate=$("ctDate").value;
   const examDate=$("date").value;
-  const hasBiopsy=$("biopsy").checked;
+  const hasBiopsy=$("biopsyStatus").value==="有";
   const hasBAL=$("bal").checked; // wash = BAL
 
   let codes=[];
@@ -1662,11 +1924,31 @@ function updateAttendanceState(){
   }
 }
 
+
+function showEntryPage(){
+  $("entryPage").style.display="block";
+  $("recordsPage").style.display="none";
+  $("showEntryPageBtn").classList.add("active");
+  $("showRecordsPageBtn").classList.remove("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showRecordsPage(){
+  $("entryPage").style.display="none";
+  $("recordsPage").style.display="block";
+  $("showEntryPageBtn").classList.remove("active");
+  $("showRecordsPageBtn").classList.add("active");
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("showEntryPageBtn").onclick=showEntryPage;
+$("showRecordsPageBtn").onclick=showRecordsPage;
+
 function clearForm(){
   editingId=null;
   fields.forEach(id=>{
     if(id==="date") $(id).value=today();
     else if(id==="ctMode") $(id).value="none";
+    else if(id==="biopsyStatus") $(id).value="無";
     else $(id).value="";
   });
   checks.forEach(id=>$(id).checked=false);
@@ -1675,8 +1957,9 @@ function clearForm(){
   updateBillingSuggestion();
   $("deleteBtn").style.display="none";
   $("formTitle").textContent="登記資料輸入";
-  $("saveBtn").textContent="儲存並新增一列";
+  $("saveBtn").textContent="儲存";
   $("history").classList.remove("show");
+  document.querySelectorAll(".field-invalid").forEach(el=>el.classList.remove("field-invalid"));
   render();
 }
 function getData(){
@@ -1688,7 +1971,8 @@ function getData(){
 }
 function fillForm(r){
   editingId=r.id;
-  fields.forEach(id=>$(id).value=r[id]??"");
+  showEntryPage();
+  fields.forEach(id=>$(id).value=id==="biopsy"?(hasBiopsyRecord(r)?"有":"無"):(r[id]??""));
   checks.forEach(id=>$(id).checked=!!r[id]);
   updateCtState();
   updateAttendanceState();
@@ -1732,7 +2016,7 @@ function updateGeneralStats(){
   const wardCount=pool.filter(r => (r.source||"")==="Ward").length;
   const icuCount=pool.filter(r => (r.source||"")==="ICU").length;
   const balCount=pool.filter(r => !!r.bal).length;
-  const biopsyCount=pool.filter(r => !!r.biopsy).length;
+  const biopsyCount=pool.filter(hasBiopsyRecord).length;
 
   $("sedationCount").textContent=String(sedationYes);
   $("sedationRate").textContent=rateText(sedationYes,total);
@@ -1862,7 +2146,7 @@ function render(){
       <td class="small">${r.eduScope?"支鏡<br>":""}${r.eduSed?"鎮靜":""}</td>
       <td>${esc(r.pain)}</td><td>${esc(r.medAssessment)}</td><td>${esc(r.ebus)}</td>
       <td>${esc(r.posted)}</td>
-      <td class="small">${r.bal?"BAL<br>":""}${r.biopsy?"Biopsy":""}</td>
+      <td class="small">${r.bal?"BAL<br>":""}${hasBiopsyRecord(r)?"Biopsy":""}</td>
       <td>${esc(r.scopeNo)}</td><td>${esc(r.doctor)}</td><td>${esc(r.operator)}</td><td>${esc(r.memo)}</td>
     </tr>`).join("");
 
@@ -1902,7 +2186,7 @@ function recordBillingCodes(r){
 
   const codes=[];
   const ebus=r.ebus||"";
-  const hasBiopsy=!!r.biopsy;
+  const hasBiopsy=(r.biopsyStatus||"無")==="有";
 
   if(ebus==="無"){
     codes.push("28006C");
@@ -2035,7 +2319,7 @@ const METRICS={
   sedation:{label:"鎮靜",match:r=>(r.sedation||"")==="有",unit:"人"},
   ebus:{label:"EBUS",match:r=>(r.ebus||"")==="有",unit:"次"},
   bal:{label:"BAL",match:r=>!!r.bal,unit:"次"},
-  biopsy:{label:"Biopsy",match:r=>!!r.biopsy,unit:"次"},
+  biopsy:{label:"Biopsy",match:r=>hasBiopsyRecord(r),unit:"次"},
   medAssessment:{label:"用藥評估（是）",match:r=>(r.medAssessment||"")==="是",unit:"人"},
   examBronchoscopy:{label:"支氣管鏡檢查",match:r=>(r.exam||"")==="支氣管鏡",unit:"人"},
   examTBNA:{label:"TBNA",match:r=>(r.exam||"")==="TBNA",unit:"人"},
@@ -2064,7 +2348,7 @@ const GROUPS={
     {label:"鎮靜(有)", match:r=>(r.sedation||"")==="有"},
     {label:"EBUS(有)", match:r=>(r.ebus||"")==="有"},
     {label:"BAL", match:r=>!!r.bal},
-    {label:"Biopsy", match:r=>!!r.biopsy},
+    {label:"Biopsy", match:r=>hasBiopsyRecord(r)},
     {label:"用藥評估(是)", match:r=>(r.medAssessment||"")==="是"},
   ]},
   exam:{label:"檢查項目", items:[
@@ -2383,7 +2667,7 @@ function showStatsPage(){
 function showRegisterPage(){
   $("statsPage").classList.remove("show");
   $("mainPage").style.display="";
-  window.scrollTo({top:0,behavior:"smooth"});
+  showRecordsPage();
 }
 $("openStatsPageBtn").onclick=showStatsPage;
 $("backToRegisterBtn").onclick=showRegisterPage;
@@ -2425,7 +2709,7 @@ $("date").onchange=updateBillingSuggestion;
 $("ebus").onchange=updateBillingSuggestion;
 $("exam").onchange=updateBillingSuggestion;
 $("bal").onchange=updateBillingSuggestion;
-$("biopsy").onchange=updateBillingSuggestion;
+$("biopsyStatus").onchange=updateBillingSuggestion;
 $("generalStatsMode").onchange=()=>{traceMode=false;showAll=false;document.querySelector(".trace-wrap").classList.remove("trace-active");render()};
 $("monthFilter").onchange=()=>{traceMode=false;showAll=false;document.querySelector(".trace-wrap").classList.remove("trace-active");render()};
 $("currentMonthBtn").onclick=()=>{traceMode=false;$("monthFilter").value=currentMonth();showAll=false;document.querySelector(".trace-wrap").classList.remove("trace-active");render()};
@@ -2453,13 +2737,33 @@ $("clearTraceBtn").onclick=()=>{
 };
 
 $("saveBtn").onclick=()=>{
-  // 若未選擇報到狀態，但已有資料並執行儲存，自動視為「有報到」
+  const requiredFields=[
+    {id:"chartNo",label:"病歷號"},
+    {id:"name",label:"姓名"},
+    {id:"exam",label:"檢查項目"}
+  ];
+  if($("attendance").value!=="未報到"){
+    requiredFields.push(
+      {id:"doctor",label:"檢查醫師"},
+      {id:"operator",label:"執行人員"}
+    );
+  }
+  document.querySelectorAll(".field-invalid").forEach(el=>el.classList.remove("field-invalid"));
+  const missing=requiredFields.find(item=>!$(item.id).value.trim());
+  if(missing){
+    const el=$(missing.id);
+    el.closest(".field").classList.add("field-invalid");
+    alert(`「${missing.label}」為必填欄位，請完成輸入。`);
+    el.focus();
+    return;
+  }
+
+  // 若尚未選擇報到狀態，但已完成必要欄位並儲存，自動視為有報到
   if(!$("attendance").value){
     $("attendance").value="有報到";
     updateAttendanceState();
   }
   const r=getData();
-  if(!r.date||!r.name){alert("請至少填寫檢查日與姓名。");return}
   if(r.attendance!=="未報到" && r.ctMode==="date"&&!r.ctDate){alert("CT 選擇「有」時，請輸入日期。");return}
   const i=records.findIndex(x=>x.id===r.id);
   if(i>=0) records[i]=r; else records.push(r);
@@ -2470,7 +2774,8 @@ $("saveBtn").onclick=()=>{
   showAll=false;
   $("monthFilter").value=(r.date||today()).slice(0,7);
   clearForm();
-  alert(wasEdit?"資料已更新。":"資料已新增，右側已自動增加一列。");
+  showRecordsPage();
+  alert(wasEdit?"資料已更新。":"資料已新增，已切換至登記資料列表。");
 };
 $("clearBtn").onclick=clearForm;
 $("deleteBtn").onclick=()=>{
@@ -2494,7 +2799,7 @@ $("csvBtn").onclick=()=>{
   const shown=getFilteredRecords();
   const heads=["序號","檢查日","CT","檢查項目","病患來源","床號","病歷號","姓名","報到狀態","Time out","Sign out","鎮靜","支鏡同意書","鎮靜同意書","支鏡衛教","鎮靜衛教","疼痛評估","用藥評估","EBUS","修改入帳","BAL","Biopsy","支鏡編號","檢查醫師","執行人員","備註"];
   const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
-  const rows=shown.map((r,i)=>[i+1,r.date,r.ctMode==="date"?r.ctDate:"無",r.exam,r.source,r.bed,r.chartNo,r.name,r.attendance,r.timeout?"是":"否",r.signout?"是":"否",r.sedation,r.consentScope?"是":"否",r.consentSed?"是":"否",r.eduScope?"是":"否",r.eduSed?"是":"否",r.pain,r.medAssessment,r.ebus,r.posted,r.bal?"是":"否",r.biopsy?"是":"否",r.scopeNo,r.doctor,r.operator,r.memo]);
+  const rows=shown.map((r,i)=>[i+1,r.date,r.ctMode==="date"?r.ctDate:"無",r.exam,r.source,r.bed,r.chartNo,r.name,r.attendance,r.timeout?"是":"否",r.signout?"是":"否",r.sedation,r.consentScope?"是":"否",r.consentSed?"是":"否",r.eduScope?"是":"否",r.eduSed?"是":"否",r.pain,r.medAssessment,r.ebus,r.posted,r.bal?"是":"否",hasBiopsyRecord(r)?"是":"否",r.scopeNo,r.doctor,r.operator,r.memo]);
   const csv="\ufeff"+[heads,...rows].map(row=>row.map(q).join(",")).join("\n");
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="支氣管鏡室病患檢查及衛教登記表.csv";a.click();
 };
@@ -2506,7 +2811,7 @@ $("importBtn").onclick=()=>$("importFile").click();
 $("importFile").onchange=e=>{
   const f=e.target.files[0];if(!f)return;
   const rd=new FileReader();
-  rd.onload=()=>{try{records=JSON.parse(rd.result);persist();clearForm();alert("匯入完成。")}catch{alert("檔案格式錯誤。")}};
+  rd.onload=()=>{try{records=JSON.parse(rd.result).map(normalizeRecord);persist();clearForm();showRecordsPage();alert("匯入完成。")}catch{alert("檔案格式錯誤。")}};
   rd.readAsText(f);
 };
 
