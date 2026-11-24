@@ -1423,6 +1423,101 @@ table{
   body.print-register .record-filter-bar{display:none!important}
 }
 
+
+/* Firebase 登入與同步狀態 */
+.auth-gate{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(247,250,248,.97);
+}
+.auth-card{
+  width:min(460px,94vw);
+  background:#fff;
+  border:1px solid #d8e3dc;
+  border-radius:18px;
+  padding:30px 28px;
+  text-align:center;
+  box-shadow:0 16px 48px rgba(32,67,50,.14);
+}
+.auth-title{
+  font-size:27px;
+  font-weight:900;
+  color:#29493a;
+}
+.auth-subtitle{
+  margin:8px 0 20px;
+  font-size:16px;
+  color:#65736c;
+}
+.google-login-btn{
+  width:100%;
+  min-height:50px;
+  border:1px solid #bfcfc6;
+  border-radius:10px;
+  background:#fff;
+  color:#26352e;
+  font-size:18px;
+  font-weight:900;
+  cursor:pointer;
+}
+.google-login-btn:hover{background:#f3f8f5}
+.auth-message{
+  min-height:22px;
+  margin-top:12px;
+  font-size:14px;
+  color:#68746e;
+}
+.auth-message.error{color:#b42318;font-weight:800}
+
+.cloud-status-bar{
+  max-width:2200px;
+  margin:0 auto 10px;
+  padding:9px 14px;
+  border:1px solid #d4e1da;
+  border-radius:11px;
+  background:#f6faf8;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.cloud-user,.cloud-actions{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+}
+.cloud-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#9aa6a0;display:inline-block;
+}
+.cloud-dot.online{background:#2d8a57}
+.cloud-dot.syncing{background:#e6a222}
+.cloud-dot.offline{background:#c44}
+.cloud-sync-text{
+  font-size:14px;
+  font-weight:800;
+  color:#405047;
+}
+.cloud-small-btn{
+  padding:6px 10px!important;
+  min-height:34px!important;
+  font-size:14px!important;
+}
+@media(max-width:650px){
+  .cloud-status-bar{align-items:stretch}
+  .cloud-actions{justify-content:flex-start}
+}
+@media print{
+  #authGate,#cloudStatusBar{display:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -1432,7 +1527,29 @@ table{
     <div class="title">病患檢查時間及衛教登記表</div>
   </div>
 
-  <div id="mainPage">
+  
+<div id="authGate" class="auth-gate">
+  <div class="auth-card">
+    <div class="auth-title">支氣管鏡室登記系統</div>
+    <div class="auth-subtitle">請使用指定 Google 帳號登入後使用</div>
+    <button id="googleLoginBtn" class="google-login-btn" type="button">使用 Google 登入</button>
+    <div id="authMessage" class="auth-message">尚未登入</div>
+  </div>
+</div>
+
+<div id="cloudStatusBar" class="cloud-status-bar" style="display:none">
+  <div class="cloud-user">
+    <span class="cloud-dot" id="cloudDot"></span>
+    <span id="cloudUserText">尚未登入</span>
+  </div>
+  <div class="cloud-actions">
+    <span id="cloudSyncText" class="cloud-sync-text">本機模式</span>
+    <button id="manualSyncBtn" type="button" class="secondary cloud-small-btn">立即同步</button>
+    <button id="logoutBtn" type="button" class="secondary cloud-small-btn">登出</button>
+  </div>
+</div>
+
+<div id="mainPage">
 <div class="page-nav">
     <button type="button" class="page-tab active" id="showEntryPageBtn">登記資料輸入</button>
     <button type="button" class="page-tab" id="showRecordsPageBtn">登記資料列表</button>
@@ -1929,7 +2046,7 @@ let traceMode=false;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const fields=["date","ctMode","ctDate","exam","source","bed","chartNo","name","attendance","sedation","ebus","biopsyStatus","pain","medAssessment","posted","scopeNo","doctor","operator","memo"];
-const checks=["timeout","signout","consentScope","consentSed","eduScope","eduSed","bal","biopsy","biopsyStatus"];
+const checks=["timeout","signout","consentScope","consentSed","eduScope","eduSed","bal","biopsy"];
 
 function hasBiopsyRecord(r){return !!r && (r.biopsy===true || r.biopsy==="有" || r.biopsy==="是")}
 function persist(){localStorage.setItem(KEY,JSON.stringify(records))}
@@ -2120,7 +2237,7 @@ function getData(){
 }
 function fillForm(r){
   editingId=r.id;
-  showRecordsPage();
+  showEntryPage();
   fields.forEach(id=>$(id).value=id==="biopsy"?(hasBiopsyRecord(r)?"有":"無"):(r[id]??""));
   checks.forEach(id=>$(id).checked=!!r[id]);
   updateCtState();
@@ -2950,6 +3067,7 @@ $("saveBtn").onclick=()=>{
   const i=records.findIndex(x=>x.id===r.id);
   if(i>=0) records[i]=r; else records.push(r);
   persist();
+  if(window.cloudUpsertRecord) window.cloudUpsertRecord(r);
   const wasEdit=i>=0;
   traceMode=false;
   document.querySelector(".trace-wrap").classList.remove("trace-active");
@@ -2962,8 +3080,11 @@ $("saveBtn").onclick=()=>{
 $("clearBtn").onclick=clearForm;
 $("deleteBtn").onclick=()=>{
   if(editingId&&confirm("確定刪除此筆資料？")){
+    const deletingId=editingId;
     records=records.filter(r=>r.id!==editingId);
-    persist();clearForm();
+    persist();
+    if(window.cloudDeleteRecord) window.cloudDeleteRecord(deletingId);
+    clearForm();
   }
 };
 $("name").oninput=()=>{
@@ -2993,7 +3114,14 @@ $("importBtn").onclick=()=>$("importFile").click();
 $("importFile").onchange=e=>{
   const f=e.target.files[0];if(!f)return;
   const rd=new FileReader();
-  rd.onload=()=>{try{records=JSON.parse(rd.result).map(normalizeRecord);persist();clearForm();showRecordsPage();alert("匯入完成。")}catch{alert("檔案格式錯誤。")}};
+  rd.onload=()=>{try{
+    records=JSON.parse(rd.result).map(normalizeRecord);
+    persist();
+    if(window.cloudReplaceAll) window.cloudReplaceAll(records);
+    clearForm();
+    showRecordsPage();
+    alert("匯入完成，已開始同步雲端。");
+  }catch{alert("檔案格式錯誤。")}};
   rd.readAsText(f);
 };
 
@@ -3002,6 +3130,255 @@ $("statsPageMonth").value=currentMonth();
 $("traceDate").value=today();
 clearForm();
 updateAttendanceState();
+showEntryPage();
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+import {
+  getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot,
+  getDocs, writeBatch
+} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBrsfafD6Uxqthk-9iy5Zi56iCjRo_QbAQ",
+  authDomain: "bronchoscopy-register.firebaseapp.com",
+  projectId: "bronchoscopy-register",
+  storageBucket: "bronchoscopy-register.firebasestorage.app",
+  messagingSenderId: "1058235797224",
+  appId: "1:1058235797224:web:5c659f3519c0402b3e835d"
+};
+
+const ALLOWED_EMAIL = "kmught@gmail.com";
+const COLLECTION_NAME = "bronchoscopyRecords";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
+
+let unsubscribeRecords = null;
+let firstSnapshotHandled = false;
+let signedInUser = null;
+
+const byId = id => document.getElementById(id);
+
+function setCloudStatus(text, state="online"){
+  const t=byId("cloudSyncText");
+  const d=byId("cloudDot");
+  if(t) t.textContent=text;
+  if(d){
+    d.classList.remove("online","syncing","offline");
+    d.classList.add(state);
+  }
+}
+function showAuthMessage(msg,isError=false){
+  const el=byId("authMessage");
+  if(!el) return;
+  el.textContent=msg;
+  el.classList.toggle("error",isError);
+}
+function cleanForFirestore(r){
+  const out={};
+  Object.entries(r||{}).forEach(([k,v])=>{
+    if(v !== undefined) out[k]=v;
+  });
+  return out;
+}
+function sortedCloudRecords(snapshot){
+  const arr=[];
+  snapshot.forEach(ds=>{
+    const data=ds.data()||{};
+    arr.push(normalizeRecord({...data,id:ds.id}));
+  });
+  arr.sort((a,b)=>(a.date||"").localeCompare(b.date||"") || (a.updatedAt||"").localeCompare(b.updatedAt||""));
+  return arr;
+}
+async function uploadLocalIfCloudEmpty(){
+  if(!Array.isArray(records) || records.length===0) return false;
+  setCloudStatus(`首次同步：正在上傳本機 ${records.length} 筆資料…`,"syncing");
+  const chunks=[];
+  for(let i=0;i<records.length;i+=400) chunks.push(records.slice(i,i+400));
+  for(const chunk of chunks){
+    const batch=writeBatch(db);
+    chunk.forEach(r=>{
+      const rr=normalizeRecord({...r});
+      batch.set(doc(db,COLLECTION_NAME,String(rr.id)),cleanForFirestore(rr),{merge:true});
+    });
+    await batch.commit();
+  }
+  setCloudStatus("首次本機資料已上傳","online");
+  return true;
+}
+function startRealtimeSync(){
+  if(unsubscribeRecords) unsubscribeRecords();
+  firstSnapshotHandled=false;
+  setCloudStatus("正在連線 Firestore…","syncing");
+
+  unsubscribeRecords=onSnapshot(
+    collection(db,COLLECTION_NAME),
+    async snapshot=>{
+      const cloudRecords=sortedCloudRecords(snapshot);
+
+      if(!firstSnapshotHandled){
+        firstSnapshotHandled=true;
+        if(cloudRecords.length===0 && Array.isArray(records) && records.length>0){
+          try{
+            await uploadLocalIfCloudEmpty();
+            return;
+          }catch(err){
+            console.error(err);
+            setCloudStatus("首次上傳失敗，保留本機資料","offline");
+            return;
+          }
+        }
+      }
+
+      records=cloudRecords;
+      persist();
+      if(typeof render==="function") render();
+      if(snapshot.metadata.fromCache){
+        setCloudStatus(`離線快取｜${records.length} 筆`,"offline");
+      }else{
+        setCloudStatus(`已同步｜${records.length} 筆`,"online");
+      }
+    },
+    err=>{
+      console.error("Firestore listener error:",err);
+      setCloudStatus("雲端連線失敗，使用本機備援","offline");
+    }
+  );
+}
+
+window.cloudUpsertRecord = async function(r){
+  if(!signedInUser) return;
+  try{
+    setCloudStatus("同步中…","syncing");
+    const rr=normalizeRecord({...r});
+    await setDoc(doc(db,COLLECTION_NAME,String(rr.id)),cleanForFirestore(rr),{merge:true});
+    setCloudStatus("已同步","online");
+  }catch(err){
+    console.error("Cloud save failed:",err);
+    setCloudStatus("雲端儲存失敗，本機已保留","offline");
+  }
+};
+
+window.cloudDeleteRecord = async function(id){
+  if(!signedInUser || !id) return;
+  try{
+    setCloudStatus("刪除同步中…","syncing");
+    await deleteDoc(doc(db,COLLECTION_NAME,String(id)));
+    setCloudStatus("已同步","online");
+  }catch(err){
+    console.error("Cloud delete failed:",err);
+    setCloudStatus("雲端刪除失敗，本機已更新","offline");
+  }
+};
+
+window.cloudReplaceAll = async function(list){
+  if(!signedInUser) return;
+  try{
+    setCloudStatus("正在以備份資料更新雲端…","syncing");
+    const snap=await getDocs(collection(db,COLLECTION_NAME));
+    const existing=snap.docs.map(x=>x.id);
+
+    for(let i=0;i<existing.length;i+=400){
+      const batch=writeBatch(db);
+      existing.slice(i,i+400).forEach(id=>batch.delete(doc(db,COLLECTION_NAME,id)));
+      await batch.commit();
+    }
+    const normalized=(list||[]).map(r=>normalizeRecord({...r}));
+    for(let i=0;i<normalized.length;i+=400){
+      const batch=writeBatch(db);
+      normalized.slice(i,i+400).forEach(r=>{
+        batch.set(doc(db,COLLECTION_NAME,String(r.id)),cleanForFirestore(r));
+      });
+      await batch.commit();
+    }
+    setCloudStatus("雲端資料已更新","online");
+  }catch(err){
+    console.error("Cloud replace failed:",err);
+    setCloudStatus("雲端匯入失敗，本機資料已保留","offline");
+  }
+};
+
+window.manualCloudSync = async function(){
+  if(!signedInUser) return;
+  try{
+    setCloudStatus("手動同步中…","syncing");
+    const snap=await getDocs(collection(db,COLLECTION_NAME));
+    if(snap.empty && records.length){
+      await uploadLocalIfCloudEmpty();
+    }else{
+      records=sortedCloudRecords(snap);
+      persist();
+      render();
+      setCloudStatus(`已同步｜${records.length} 筆`,"online");
+    }
+  }catch(err){
+    console.error(err);
+    setCloudStatus("手動同步失敗","offline");
+  }
+};
+
+byId("googleLoginBtn")?.addEventListener("click",async()=>{
+  showAuthMessage("正在開啟 Google 登入…");
+  try{
+    const result=await signInWithPopup(auth,provider);
+    if((result.user.email||"").toLowerCase() !== ALLOWED_EMAIL.toLowerCase()){
+      await signOut(auth);
+      showAuthMessage("此帳號未被授權使用本系統。",true);
+    }
+  }catch(err){
+    console.error(err);
+    showAuthMessage("Google 登入失敗：" + (err.message||err.code),true);
+  }
+});
+
+byId("logoutBtn")?.addEventListener("click",async()=>{
+  if(unsubscribeRecords){unsubscribeRecords();unsubscribeRecords=null;}
+  await signOut(auth);
+});
+byId("manualSyncBtn")?.addEventListener("click",()=>window.manualCloudSync());
+
+onAuthStateChanged(auth,async user=>{
+  signedInUser=user||null;
+
+  if(!user){
+    byId("authGate").style.display="flex";
+    byId("cloudStatusBar").style.display="none";
+    byId("cloudUserText").textContent="尚未登入";
+    showAuthMessage("請使用指定 Google 帳號登入");
+    return;
+  }
+
+  if((user.email||"").toLowerCase() !== ALLOWED_EMAIL.toLowerCase()){
+    showAuthMessage("此 Google 帳號沒有權限。",true);
+    await signOut(auth);
+    return;
+  }
+
+  byId("authGate").style.display="none";
+  byId("cloudStatusBar").style.display="flex";
+  byId("cloudUserText").textContent=`${user.email}｜雲端同步`;
+  setCloudStatus("登入成功，正在同步…","syncing");
+  startRealtimeSync();
+});
+
+window.addEventListener("online",()=>{
+  if(signedInUser){
+    setCloudStatus("網路已恢復，重新同步中…","syncing");
+    window.manualCloudSync();
+  }
+});
+window.addEventListener("offline",()=>{
+  setCloudStatus("目前離線｜使用本機備援","offline");
+});
+</script>
+
 </body>
 </html>
