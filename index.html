@@ -1518,6 +1518,156 @@ table{
   #authGate,#cloudStatusBar{display:none!important}
 }
 
+
+/* ===== 柔和、清楚版面 ===== */
+:root{
+  --soft-bg:#f5f8f6;
+  --soft-card:#ffffff;
+  --soft-line:#d8e4dd;
+  --soft-green:#477764;
+  --soft-green-dark:#315b4b;
+  --soft-green-light:#edf5f1;
+  --soft-text:#263a31;
+  --soft-muted:#6d7b74;
+}
+body{
+  background:var(--soft-bg)!important;
+  color:var(--soft-text);
+}
+.header{
+  background:#fff!important;
+  border:1px solid var(--soft-line)!important;
+  box-shadow:0 2px 10px rgba(49,91,75,.05);
+}
+.hospital,.title{
+  color:var(--soft-green-dark)!important;
+}
+.page-nav{
+  background:#edf4f0!important;
+  border:1px solid var(--soft-line)!important;
+  box-shadow:none!important;
+}
+.page-tab{
+  color:#486558!important;
+  transition:.15s ease;
+}
+.page-tab.active{
+  background:var(--soft-green)!important;
+  color:#fff!important;
+  box-shadow:0 2px 6px rgba(49,91,75,.16)!important;
+}
+.toolbar,
+.record-filter-bar,
+#recordsPage .card,
+#entryPage .form-card,
+.stats-chart-card,
+.nhi-points-card{
+  background:var(--soft-card)!important;
+  border-color:var(--soft-line)!important;
+  box-shadow:0 2px 10px rgba(49,91,75,.045)!important;
+}
+.record-filter-bar{
+  padding:16px 18px!important;
+  border-radius:14px!important;
+}
+.record-filter-title{
+  color:var(--soft-green-dark)!important;
+  font-size:19px!important;
+}
+.record-filter-field label{
+  color:#52685d!important;
+}
+.record-filter-field input,
+.record-filter-field select,
+.toolbar input,
+.toolbar select{
+  border:1px solid #cddbd3!important;
+  background:#fbfdfc!important;
+  border-radius:8px!important;
+}
+.record-filter-field input:focus,
+.record-filter-field select:focus,
+.toolbar input:focus,
+.toolbar select:focus{
+  outline:none!important;
+  border-color:#79a38f!important;
+  box-shadow:0 0 0 3px rgba(121,163,143,.13)!important;
+}
+.record-filter-actions{
+  display:flex!important;
+  gap:8px!important;
+  align-items:end!important;
+}
+.record-search-btn{
+  background:var(--soft-green)!important;
+  border-color:var(--soft-green)!important;
+  color:#fff!important;
+  min-width:84px;
+}
+.record-search-btn:hover{
+  background:var(--soft-green-dark)!important;
+}
+#registerTable{
+  border-color:#ccd9d1!important;
+}
+#registerTable th{
+  background:#eaf2ee!important;
+  color:#2f5344!important;
+  border-color:#cbd8d0!important;
+}
+#registerTable td{
+  border-color:#d8e1dc!important;
+  background:#fff!important;
+}
+#registerTable tbody tr:nth-child(even) td{
+  background:#fafcfb!important;
+}
+#registerTable tbody tr:hover td{
+  background:#f1f7f4!important;
+}
+.summary-bar{
+  background:#f9fbfa!important;
+  border-color:var(--soft-line)!important;
+}
+.summary-title{
+  color:var(--soft-green-dark)!important;
+}
+.primary{
+  background:var(--soft-green)!important;
+  border-color:var(--soft-green)!important;
+}
+.primary:hover{
+  background:var(--soft-green-dark)!important;
+}
+.secondary{
+  border-color:#ccd9d1!important;
+  background:#f4f7f5!important;
+  color:#314b40!important;
+}
+.secondary:hover{
+  background:#e8f0ec!important;
+}
+.edit-action-btn{
+  background:#f2ad3f!important;
+  border-color:#dc9425!important;
+  color:#2c271f!important;
+}
+.edit-action-btn:hover{
+  background:#ffc96f!important;
+}
+.cloud-status-bar{
+  background:#f6faf8!important;
+  border-color:var(--soft-line)!important;
+}
+@media(max-width:720px){
+  .record-filter-actions{
+    width:100%;
+  }
+  .record-filter-actions button{
+    flex:1;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1551,8 +1701,8 @@ table{
 
 <div id="mainPage">
 <div class="page-nav">
-    <button type="button" class="page-tab active" id="showEntryPageBtn">登記資料輸入</button>
-    <button type="button" class="page-tab" id="showRecordsPageBtn">登記資料列表</button>
+    <button type="button" class="page-tab active" id="showEntryPageBtn">資料輸入</button>
+    <button type="button" class="page-tab" id="showRecordsPageBtn">資料列表</button>
   </div>
 
   <section id="entryPage" class="work-page">
@@ -1733,7 +1883,7 @@ table{
   </div>
         
     <div class="record-filter-bar">
-      <div class="record-filter-title">登記資料篩選</div>
+      <div class="record-filter-title">資料篩選</div>
 
       <div class="record-filter-field record-filter-search">
         <label for="recordKeyword">姓名／病歷號／床號</label>
@@ -1770,6 +1920,7 @@ table{
       </div>
 
       <div class="record-filter-actions">
+        <button type="button" class="primary record-search-btn" id="applyRecordFilterBtn">查詢</button>
         <button type="button" class="secondary" id="clearRecordFilterBtn">清除篩選</button>
       </div>
     </div>
@@ -2335,6 +2486,23 @@ function updateTraceStats(){
 
   box.classList.add("show");
 }
+let appliedRecordFilter={
+  keyword:"",
+  exam:"",
+  source:"",
+  dateFrom:"",
+  dateTo:""
+};
+function readRecordFilterInputs(){
+  return {
+    keyword:($("recordKeyword")?.value||"").trim().toLowerCase(),
+    exam:($("recordExamFilter")?.value||"").trim(),
+    source:($("recordSourceFilter")?.value||"").trim(),
+    dateFrom:($("recordDateFrom")?.value||"").trim(),
+    dateTo:($("recordDateTo")?.value||"").trim()
+  };
+}
+
 function getFilteredRecords(){
   let list=[...records];
   list.sort((a,b)=>(a.date||"").localeCompare(b.date||"") || (a.updatedAt||"").localeCompare(b.updatedAt||""));
@@ -2360,11 +2528,7 @@ function getFilteredRecords(){
     }
   }
 
-  const keyword=($("recordKeyword")?.value||"").trim().toLowerCase();
-  const exam=($("recordExamFilter")?.value||"").trim();
-  const source=($("recordSourceFilter")?.value||"").trim();
-  const dateFrom=($("recordDateFrom")?.value||"").trim();
-  const dateTo=($("recordDateTo")?.value||"").trim();
+  const {keyword,exam,source,dateFrom,dateTo}=appliedRecordFilter;
 
   if(keyword){
     list=list.filter(r=>{
@@ -2414,7 +2578,7 @@ function render(){
   const filtered=getFilteredRecords();
   renderSummary(filtered);
   if(!filtered.length){
-    $("body").innerHTML='<tr><td colspan="24" class="empty">目前篩選條件下尚無資料，請由左側輸入後按「儲存並新增一列」。</td></tr>';
+    $("body").innerHTML='<tr><td colspan="24" class="empty">目前查詢條件下尚無資料。</td></tr>';
     return;
   }
   $("body").innerHTML=filtered.map((r,i)=>`
@@ -2441,12 +2605,7 @@ function render(){
       fillForm(records.find(r=>r.id===id));
     };
   });
-  document.querySelectorAll("#body tr").forEach(tr=>{
-    tr.onclick=()=>{
-      const r=records.find(x=>x.id===tr.dataset.id);
-      if(r) fillForm(r);
-    };
-  });
+
 }
 
 
@@ -2995,10 +3154,20 @@ $("exam").onchange=updateBillingSuggestion;
 $("bal").onchange=updateBillingSuggestion;
 $("biopsyStatus").onchange=updateBillingSuggestion;
 
-["recordKeyword","recordExamFilter","recordSourceFilter","recordDateFrom","recordDateTo"].forEach(id=>{
-  const el=$(id);
-  if(!el) return;
-  el.addEventListener(id==="recordKeyword"?"input":"change",render);
+$("applyRecordFilterBtn").onclick=()=>{
+  const f=readRecordFilterInputs();
+  if(f.dateFrom && f.dateTo && f.dateFrom>f.dateTo){
+    alert("檢查日期起日不可晚於迄日。");
+    return;
+  }
+  appliedRecordFilter=f;
+  render();
+};
+$("recordKeyword").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    $("applyRecordFilterBtn").click();
+  }
 });
 $("clearRecordFilterBtn").onclick=()=>{
   $("recordKeyword").value="";
@@ -3006,6 +3175,7 @@ $("clearRecordFilterBtn").onclick=()=>{
   $("recordSourceFilter").value="";
   $("recordDateFrom").value="";
   $("recordDateTo").value="";
+  appliedRecordFilter={keyword:"",exam:"",source:"",dateFrom:"",dateTo:""};
   render();
 };
 
