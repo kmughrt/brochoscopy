@@ -1668,6 +1668,31 @@ body{
   }
 }
 
+
+/* 統計資料主頁籤與統計列印按鈕 */
+#showStatsTabBtn.active{
+  background:var(--soft-green)!important;
+  color:#fff!important;
+  box-shadow:0 2px 6px rgba(49,91,75,.16)!important;
+}
+.stats-print-btn{
+  background:#29493a!important;
+  color:#fff!important;
+  border:2px solid #18362b!important;
+  border-radius:9px!important;
+  font-weight:900!important;
+  font-size:16px!important;
+  padding:9px 17px!important;
+  min-height:42px;
+  box-shadow:0 2px 6px rgba(24,54,43,.20)!important;
+  cursor:pointer;
+}
+.stats-print-btn:hover{
+  background:#18362b!important;
+  border-color:#10271f!important;
+  transform:translateY(-1px);
+}
+
 </style>
 </head>
 <body>
@@ -1703,6 +1728,7 @@ body{
 <div class="page-nav">
     <button type="button" class="page-tab active" id="showEntryPageBtn">資料輸入</button>
     <button type="button" class="page-tab" id="showRecordsPageBtn">資料列表</button>
+    <button type="button" class="page-tab" id="showStatsTabBtn">統計資料</button>
   </div>
 
   <section id="entryPage" class="work-page">
@@ -1873,7 +1899,7 @@ body{
       </div>
     </div>
     <div class="toolbar-right">
-      <button class="primary" id="openStatsPageBtn">統計資料</button>
+      
       <button class="secondary" id="csvBtn">匯出目前畫面 CSV</button>
       <button class="secondary" id="backupBtn">備份</button>
       <button class="secondary" id="importBtn">匯入</button>
@@ -2008,7 +2034,7 @@ body{
     <div class="stats-page-toolbar">
       <button class="secondary return-action-btn" id="backToRegisterBtn">← 返回</button>
       <div class="stats-page-title">支氣管鏡室統計總覽</div>
-      <button class="secondary" id="printStatsBtn">列印統計頁</button>
+      <button class="stats-print-btn" id="printStatsBtn">列印統計頁</button>
     </div>
 
     <div class="stats-analysis-filter">
@@ -2343,22 +2369,29 @@ function updateAttendanceState(){
 
 
 function showEntryPage(){
+  $("statsPage").classList.remove("show");
+  $("mainPage").style.display="";
   $("entryPage").style.display="block";
   $("recordsPage").style.display="none";
   $("showEntryPageBtn").classList.add("active");
   $("showRecordsPageBtn").classList.remove("active");
+  $("showStatsTabBtn").classList.remove("active");
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function showRecordsPage(){
+  $("statsPage").classList.remove("show");
+  $("mainPage").style.display="";
   $("entryPage").style.display="none";
   $("recordsPage").style.display="block";
   $("showEntryPageBtn").classList.remove("active");
   $("showRecordsPageBtn").classList.add("active");
+  $("showStatsTabBtn").classList.remove("active");
   render();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 $("showEntryPageBtn").onclick=showEntryPage;
 $("showRecordsPageBtn").onclick=showRecordsPage;
+$("showStatsTabBtn").onclick=showStatsPage;
 
 function clearForm(){
   editingId=null;
@@ -3104,6 +3137,9 @@ function showStatsPage(){
   setStatsModeUI();
   $("mainPage").style.display="none";
   $("statsPage").classList.add("show");
+  $("showEntryPageBtn").classList.remove("active");
+  $("showRecordsPageBtn").classList.remove("active");
+  $("showStatsTabBtn").classList.add("active");
   renderStatsPage();
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -3112,7 +3148,6 @@ function showRegisterPage(){
   $("mainPage").style.display="";
   showRecordsPage();
 }
-$("openStatsPageBtn").onclick=showStatsPage;
 $("backToRegisterBtn").onclick=showRegisterPage;
 $("nhiPointValue").oninput=updateNhiPointEstimate;
 $("statsViewMode").onchange=renderStatsPage;
